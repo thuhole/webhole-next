@@ -7,7 +7,7 @@ import 'package:webhole/utils.dart';
 import 'config.dart';
 
 abstract class _HoleFetcher {
-  Future<dynamic> fetch(int page);
+  Future<List<dynamic>> fetch(int page);
 }
 
 class PostFetcher extends _HoleFetcher {
