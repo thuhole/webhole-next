@@ -1,9 +1,10 @@
 os: linux
-distro: bionic
+dist: bionic
 
 before_script:
-  - git clone https://github.com/flutter/flutter.git -b beta
+  - git clone https://github.com/flutter/flutter.git -b beta --depth=1
   - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
+  - flutter version 1.19.0-4.3.pre
   - flutter config --enable-web
 
 script:
