@@ -4,7 +4,7 @@ dist: bionic
 before_script:
   - if cd flutter; then git pull && cd .. ; else git clone https://github.com/flutter/flutter.git -b 1.19.0-4.3.pre; fi
   - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
-  - flutter doctor
+#  - flutter doctor -v
   - flutter clean
   - flutter config --enable-web
 

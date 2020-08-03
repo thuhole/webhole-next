@@ -72,7 +72,7 @@ class _FlowChunkState extends State<FlowChunk> {
       body: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets\\a.jpg"),
+              image: AssetImage("assets/a.jpg"),
               fit: BoxFit.cover,
             ),
           ),
