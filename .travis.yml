@@ -2,13 +2,15 @@ os: linux
 dist: bionic
 
 before_script:
-  - git clone https://github.com/flutter/flutter.git -b beta --depth=1
+  - if cd flutter; then git pull && cd .. ; else git clone https://github.com/flutter/flutter.git; fi
   - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
   - flutter version 1.19.0-4.3.pre
+  - flutter doctor
+  - flutter clean
   - flutter config --enable-web
 
 script:
-  - flutter build web
+  - flutter build web --release
 
 deploy:
   provider: pages
