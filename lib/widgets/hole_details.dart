@@ -70,7 +70,7 @@ class HoleDetailsState extends State<HoleDetails> {
     return Scaffold(
       appBar: AppBar(
         title: Text('#' + info["pid"].toString()),
-        toolbarHeight: 0,
+//        toolbarHeight: 0,
         backgroundColor: secondaryColor,
       ),
       body: Container(
