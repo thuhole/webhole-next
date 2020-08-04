@@ -81,8 +81,19 @@ class HoleDetailsState extends State<HoleDetails> {
 ////        toolbarHeight: 0,
 //        backgroundColor: primaryColor,
 //      ),
+      floatingActionButton: new FloatingActionButton(
+        child: Icon(
+          Icons.arrow_back_ios,
+        ),
+        backgroundColor: secondaryColor,
+        elevation: 10,
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       body: Container(
-          decoration: new BoxDecoration(color: backgroundColor),
+          decoration: BoxDecoration(color: backgroundColor),
           child: _buildPosts()),
     );
   }

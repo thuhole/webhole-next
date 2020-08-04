@@ -121,8 +121,8 @@ class _HomeWidgetState extends State<HomeWidget> {
           alignment: Alignment.bottomCenter,
           children: <Widget>[
             Container(
-              width: constraints.maxWidth,
-              height: constraints.maxHeight - _offset,
+              padding:
+                  EdgeInsets.only(bottom: _containerMaxHeight + this._offset),
               child: PageView(
                   controller: _c,
                   onPageChanged: (newPage) {
@@ -133,8 +133,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                   },
                   children: [postsWidget, attentionWidget, settingsWidget]),
             ),
-            AnimatedPositioned(
-                duration: Duration(microseconds: 300),
+            Positioned(
                 bottom: _offset,
                 width: constraints.maxWidth,
                 child: Container(

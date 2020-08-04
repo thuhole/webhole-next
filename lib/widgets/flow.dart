@@ -96,15 +96,12 @@ class FlowChunkState extends State<FlowChunk> {
 //      ),
 
 //        body: _buildSuggestions()
-      floatingActionButton: Align(
-        child: FloatingActionButton(
-          onPressed: () {
-            // Add your onPressed code here!
-          },
-          child: Icon(Icons.add),
-          backgroundColor: secondaryColor,
-        ),
-        alignment: Alignment(1, 0.8),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Add your onPressed code here!
+        },
+        child: Icon(Icons.add),
+        backgroundColor: secondaryColor,
       ),
       body: Container(
 //          decoration: BoxDecoration(
