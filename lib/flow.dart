@@ -105,6 +105,7 @@ class FlowChunkState extends State<FlowChunk> {
 //              fit: BoxFit.cover,
 //            ),
 //          ),
+          decoration: new BoxDecoration(color: backgroundColor),
           child: _buildPosts()),
     );
   }

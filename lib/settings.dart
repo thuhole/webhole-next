@@ -71,6 +71,19 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               },
             ),
           ),
+          Card(
+            elevation: 4,
+            child: ListTile(
+              title: Text("北京颜色"),
+              trailing: CircleAvatar(
+                backgroundColor: backgroundColor,
+              ),
+              onTap: () {
+                showColorPicker(
+                    context, backgroundColor, changeBackgroundColor);
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -94,8 +107,17 @@ class _SettingsWidgetState extends State<SettingsWidget> {
     await prefs.setInt('secondaryColor', color.value);
   }
 
-  showColorPicker(BuildContext context, Color pickerColor,
-      Function changeColor) {
+  void changeBackgroundColor(Color color) async {
+    setState(() {
+      backgroundColor = color;
+    });
+    refreshHome();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('backgroundColor', color.value);
+  }
+
+  showColorPicker(
+      BuildContext context, Color pickerColor, Function changeColor) {
     showDialog(
       context: context,
       child: AlertDialog(
