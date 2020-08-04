@@ -28,9 +28,9 @@ class PostWidget extends StatelessWidget {
         // Use material to make Hero take effect.
         child: Center(
           child: Card(
-            elevation: 10,
+            elevation: 8,
             clipBehavior: Clip.antiAliasWithSaveLayer,
-            margin: EdgeInsets.symmetric(vertical: 12.0, horizontal: 0.0),
+            margin: EdgeInsets.only(bottom: 20),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(15.0)),
 //          borderRadius: BorderRadius.only(
