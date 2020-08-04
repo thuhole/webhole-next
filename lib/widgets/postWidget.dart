@@ -25,6 +25,7 @@ class PostWidget extends StatelessWidget {
       tag: type + idText,
       child: Material(
         // Use material to make Hero take effect.
+        color: backgroundColor,
         child: Center(
           child: Card(
             elevation: 8,
