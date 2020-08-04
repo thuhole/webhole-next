@@ -9,6 +9,8 @@ Color secondaryColor = Colors.green;
 
 void initColor() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  primaryColor = Color(prefs.getInt("primaryColor"));
-  secondaryColor = Color(prefs.getInt("secondaryColor"));
+  int pColorInt = prefs.getInt("primaryColor");
+  int sColorInt = prefs.getInt("secondaryColor");
+  if (pColorInt != null) primaryColor = Color(pColorInt);
+  if (sColorInt != null) secondaryColor = Color(sColorInt);
 }
