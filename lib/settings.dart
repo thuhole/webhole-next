@@ -1,16 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:webhole/config.dart';
 
-class SettingsWidget extends StatelessWidget {
+class SettingsWidget extends StatefulWidget {
+  final Function refreshHome;
+
+  SettingsWidget(this.refreshHome);
+
+  @override
+  _SettingsWidgetState createState() => _SettingsWidgetState(this.refreshHome);
+}
+
+class _SettingsWidgetState extends State<SettingsWidget> {
   final myController = TextEditingController();
+  Function refreshHome;
+
+  _SettingsWidgetState(this.refreshHome);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('设置'),
+        backgroundColor: secondaryColor,
       ),
       body: ListView(
+        padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10.0),
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -26,7 +42,99 @@ class SettingsWidget extends StatelessWidget {
                 showDialog(context: context, builder: inputTokenDialog);
               },
             ),
-          )
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text("个性化"),
+          ),
+          Card(
+            elevation: 4,
+            child: ListTile(
+              title: Text("主要颜色"),
+              trailing: CircleAvatar(
+                backgroundColor: primaryColor,
+              ),
+              onTap: () {
+                showColorPicker(context, primaryColor, changePrimaryColor);
+              },
+            ),
+          ),
+          Card(
+            elevation: 4,
+            child: ListTile(
+              title: Text("次要颜色"),
+              trailing: CircleAvatar(
+                backgroundColor: secondaryColor,
+              ),
+              onTap: () {
+                showColorPicker(context, secondaryColor, changeSecondaryColor);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void changePrimaryColor(Color color) async {
+    setState(() {
+      primaryColor = color;
+    });
+    refreshHome();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('primaryColor', color.value);
+  }
+
+  void changeSecondaryColor(Color color) async {
+    setState(() {
+      secondaryColor = color;
+    });
+    refreshHome();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('secondaryColor', color.value);
+  }
+
+  showColorPicker(BuildContext context, Color pickerColor,
+      Function changeColor) {
+    showDialog(
+      context: context,
+      child: AlertDialog(
+        title: const Text('Pick a color!'),
+        content: SingleChildScrollView(
+//          child: ColorPicker(
+//            pickerColor: pickerColor,
+//            onColorChanged: changeColor,
+//            showLabel: true,
+//            pickerAreaHeightPercent: 0.8,
+//          ),
+          // Use Material color picker:
+          //
+          child: MaterialPicker(
+            pickerColor: pickerColor,
+            onColorChanged: changeColor,
+//             showLabel: true, // only on portrait mode
+          ),
+          //
+          // Use Block color picker:
+          //
+          // child: BlockPicker(
+          //   pickerColor: currentColor,
+          //   onColorChanged: changeColor,
+          // ),
+          //
+          // child: MultipleChoiceBlockPicker(
+          //   pickerColors: currentColors,
+          //   onColorsChanged: changeColors,
+          // ),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: const Text('Got it'),
+            onPressed: () {
+//              setState(() => currentColor = pickerColor);
+              Navigator.of(context).pop();
+            },
+          ),
         ],
       ),
     );
@@ -85,7 +193,7 @@ class _TokenFormState extends State<TokenForm> {
                       "Save",
                       style: TextStyle(color: Colors.white),
                     ),
-                    color: Colors.orange,
+                    color: primaryColor,
                   ),
                 ),
               )
@@ -99,5 +207,5 @@ class _TokenFormState extends State<TokenForm> {
 
 _saveToken(String token) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setString('token', token);
+  await prefs.setString('thuToken', token);
 }

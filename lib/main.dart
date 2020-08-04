@@ -4,10 +4,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:webhole/config.dart';
+import 'package:webhole/network.dart';
+
 import 'flow.dart';
 import 'settings.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -26,54 +33,83 @@ class HomeWidget extends StatefulWidget {
 }
 
 class _HomeWidgetState extends State<HomeWidget> {
-  ScrollController _scrollController;
+  ScrollController _timelineScrollController;
+  ScrollController _attentionScrollController;
   double _containerMaxHeight = 56, _offset, _delta = 0, _oldOffset = 0;
 
   int _selectedIndex = 0;
-  static List<Widget> _widgetOptions;
+  final GlobalKey<FlowChunkState> _keyPosts = GlobalKey();
+  final GlobalKey<FlowChunkState> _keyAttention = GlobalKey();
+  FlowChunk postsWidget;
+  FlowChunk attentionWidget;
+  SettingsWidget settingsWidget;
+
+  void refresh() {
+    setState(() {});
+  }
 
   void _onItemTapped(int index) {
-    this._c.animateToPage(index,
-        duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+    if (index != _selectedIndex) {
+      this._c.animateToPage(index,
+          duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+    } else {
+      if (index == 0) {
+        _keyPosts.currentState.refresh();
+      } else if (index == 1) {
+        _keyAttention.currentState.refresh();
+      }
+    }
   }
 
   PageController _c;
 
   @override
   void initState() {
+    initColor();
     _c = new PageController(
       initialPage: _selectedIndex,
     );
     super.initState();
     _offset = 0;
-    _scrollController = ScrollController()
+    _timelineScrollController = ScrollController()
       ..addListener(() {
-        setState(() {
-          double offset = _scrollController.offset;
-          _delta += (offset - _oldOffset);
-          if (_delta > _containerMaxHeight)
-            _delta = _containerMaxHeight;
-          else if (_delta < 0) _delta = 0;
-          _oldOffset = offset;
-          _offset = -_delta;
-        });
+        double offset = _timelineScrollController.offset;
+        _delta += (offset - _oldOffset);
+        if (_delta > _containerMaxHeight)
+          _delta = _containerMaxHeight;
+        else if (_delta < 0) _delta = 0;
+        _oldOffset = offset;
+        if (_delta == 0 || _delta == _containerMaxHeight) {
+          setState(() {
+            _offset = -_delta;
+          });
+        }
       });
-    _widgetOptions = <Widget>[
-      FlowChunk(this._scrollController),
-      Scaffold(
-        body: Center(
-          child: Text(
-            'Page not implemented',
-          ),
-        ),
-      ),
-      SettingsWidget(),
-    ];
+    _attentionScrollController = ScrollController()
+      ..addListener(() {
+        double offset = _attentionScrollController.offset;
+        _delta += (offset - _oldOffset);
+        if (_delta > _containerMaxHeight)
+          _delta = _containerMaxHeight;
+        else if (_delta < 0) _delta = 0;
+        _oldOffset = offset;
+        if (_delta == 0 || _delta == _containerMaxHeight) {
+          setState(() {
+            _offset = -_delta;
+          });
+        }
+      });
+    postsWidget =
+        FlowChunk(_keyPosts, this._timelineScrollController, PostsFetcher());
+    attentionWidget = FlowChunk(
+        _keyAttention, this._attentionScrollController, AttentionFetcher());
+    settingsWidget = SettingsWidget(refresh);
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(() {});
+    _timelineScrollController.removeListener(() {});
+    _attentionScrollController.removeListener(() {});
     super.dispose();
   }
 
@@ -84,35 +120,45 @@ class _HomeWidgetState extends State<HomeWidget> {
         return Stack(
           alignment: Alignment.bottomCenter,
           children: <Widget>[
-            PageView(
-                controller: _c,
-                onPageChanged: (newPage) {
-                  setState(() {
-                    this._selectedIndex = newPage;
-                  });
-                },
-                children: _widgetOptions),
-            Positioned(
+            Container(
+              width: constraints.maxWidth,
+              height: constraints.maxHeight - _offset,
+              child: PageView(
+                  controller: _c,
+                  onPageChanged: (newPage) {
+                    setState(() {
+                      this._selectedIndex = newPage;
+                      this._offset = 0;
+                    });
+                  },
+                  children: [postsWidget, attentionWidget, settingsWidget]),
+            ),
+            AnimatedPositioned(
+                duration: Duration(microseconds: 300),
                 bottom: _offset,
                 width: constraints.maxWidth,
-                child: BottomNavigationBar(
-                  items: const <BottomNavigationBarItem>[
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.sync),
-                      title: Text('时间线'),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.bookmark_border),
-                      title: Text('关注'),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.settings),
-                      title: Text('设置'),
-                    ),
-                  ],
-                  currentIndex: _selectedIndex,
-                  selectedItemColor: Colors.orange,
-                  onTap: _onItemTapped,
+                child: Container(
+                  width: double.infinity,
+                  height: _containerMaxHeight,
+                  child: BottomNavigationBar(
+                    items: const <BottomNavigationBarItem>[
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.sync),
+                        title: Text('时间线'),
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.bookmark_border),
+                        title: Text('关注'),
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.settings),
+                        title: Text('设置'),
+                      ),
+                    ],
+                    currentIndex: _selectedIndex,
+                    selectedItemColor: primaryColor,
+                    onTap: _onItemTapped,
+                  ),
                 )),
           ],
         );

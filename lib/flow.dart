@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:webhole/config.dart';
+import 'package:webhole/utils.dart';
 
 import 'network.dart';
 
 class FlowChunk extends StatefulWidget {
   final ScrollController _scrollBottomBarController;
+  final HoleFetcher fetcher;
 
-  FlowChunk(this._scrollBottomBarController);
+  FlowChunk(Key key, this._scrollBottomBarController, this.fetcher)
+      : super(key: key);
 
   @override
-  _FlowChunkState createState() =>
-      _FlowChunkState(this._scrollBottomBarController);
+  FlowChunkState createState() =>
+      FlowChunkState(this._scrollBottomBarController, this.fetcher);
 }
 
-class _FlowChunkState extends State<FlowChunk> {
-  final _postsList = [];
+class FlowChunkState extends State<FlowChunk> {
+  dynamic _postsList = [];
 
   ScrollController _scrollBottomBarController;
+
 //  final _biggerFont = const TextStyle(fontSize: 18.0);
-  final _itemFetcher = PostFetcher();
+  final HoleFetcher _itemFetcher;
 
   bool _isLoading = true;
   bool _hasMore = true;
@@ -26,7 +30,7 @@ class _FlowChunkState extends State<FlowChunk> {
   String errorMsg;
   int _currentPage = 1;
 
-  _FlowChunkState(this._scrollBottomBarController);
+  FlowChunkState(this._scrollBottomBarController, this._itemFetcher);
 
   @override
   void initState() {
@@ -34,6 +38,17 @@ class _FlowChunkState extends State<FlowChunk> {
     _isLoading = true;
     _hasMore = true;
     _loadMore(_currentPage);
+  }
+
+  Future<void> refresh() async {
+    setState(() {
+      _isLoading = true;
+      _hasMore = true;
+      _onError = false;
+      _currentPage = 1;
+      _postsList = [];
+      _loadMore(_currentPage);
+    });
   }
 
   void _loadMore(int page) {
@@ -63,38 +78,52 @@ class _FlowChunkState extends State<FlowChunk> {
 
   @override
   Widget build(BuildContext context) {
+    print("flow build");
     return Scaffold(
 //      appBar: AppBar(
-//        title: Text('Startup Name Generator'),
+//        title: Text('树洞'),
+//        toolbarHeight: 0,
+//        backgroundColor: secondaryColor,
 //      ),
 
 //        body: _buildSuggestions()
+      floatingActionButton: Align(
+        child: FloatingActionButton(
+          onPressed: () {
+            // Add your onPressed code here!
+          },
+          child: Icon(Icons.add),
+          backgroundColor: secondaryColor,
+        ),
+        alignment: Alignment(1, 0.8),
+      ),
       body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/a.jpg"),
-              fit: BoxFit.cover,
-            ),
-          ),
+//          decoration: BoxDecoration(
+//            image: DecorationImage(
+//              image: AssetImage("assets/a.jpg"),
+//              fit: BoxFit.cover,
+//            ),
+//          ),
           child: _buildPosts()),
     );
   }
 
   Widget _buildRow(int index) {
     String pidText = "#" + _postsList[index]["pid"].toString();
-//    Color color = Colors.amberAccent;
-    Color color = Color.fromRGBO(141, 163, 210, 1);
+//    Color color = Color.fromRGBO(141, 163, 210, 1);
     return Center(
       child: Card(
-        margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        margin: EdgeInsets.symmetric(vertical: 12.0, horizontal: 0.0),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              topRight: Radius.circular(15.0),
-              bottomLeft: Radius.circular(15.0),
-              bottomRight: Radius.circular(15.0)),
+          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+//          borderRadius: BorderRadius.only(
+//              topRight: Radius.circular(15.0),
+//              bottomLeft: Radius.circular(15.0),
+//              bottomRight: Radius.circular(15.0)),
         ),
         child: InkWell(
-          splashColor: Colors.blue.withAlpha(30),
+          splashColor: secondaryColor,
           onTap: () {
             print('Card tapped.');
           },
@@ -102,24 +131,36 @@ class _FlowChunkState extends State<FlowChunk> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                color: color,
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+                decoration: new BoxDecoration(color: primaryColor),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 0.0, horizontal: 8.0),
-                      child: Text(pidText),
+                      child: Text(pidText +
+                          "  " +
+                          getDateDiff((new DateTime.now()
+                                      .toUtc()
+                                      .microsecondsSinceEpoch ~/
+                                  1000000) -
+                              _postsList[index]["timestamp"])),
                     ),
-                    Text("大约？分钟之前"),
                     Spacer(),
-                    Icon(Icons.comment),
+                    Icon(
+                      Icons.comment,
+                      size: 20,
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: Text(_postsList[index]["reply"].toString()),
                     ),
-                    Icon(Icons.star),
+                    Icon(
+                      Icons.star,
+                      size: 20,
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: Text(_postsList[index]["likenum"].toString()),
@@ -132,18 +173,24 @@ class _FlowChunkState extends State<FlowChunk> {
                 thickness: 1,
                 height: 0,
               ),
-              _postsList[index]["text"].toString().length > 0 ? Container(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
-                  child: Text(_postsList[index]["text"].toString()),
-                ),
-              ) : Container(),
-              _postsList[index]["type"] == "image" ? Container(
-                child: Image.network(
-                  THUHOLE_IMAGE_BASE + _postsList[index]["url"].toString(),
-                ),
-              ) : Container(),
+              _postsList[index]["text"].toString().length > 0
+                  ? Container(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12.0, vertical: 16.0),
+                        child: Text(_postsList[index]["text"].toString()),
+                      ),
+                    )
+                  : Container(),
+              _postsList[index]["type"] == "image"
+                  ? Container(
+                      child: Image.network(
+                        THUHOLE_IMAGE_BASE +
+                            _postsList[index]["url"].toString(),
+                      ),
+                    )
+                  : Container(),
             ],
           ),
         ),
@@ -152,33 +199,36 @@ class _FlowChunkState extends State<FlowChunk> {
   }
 
   Widget _buildPosts() {
-    return ListView.builder(
-        physics: ClampingScrollPhysics(),
-        controller: _scrollBottomBarController,
-        padding: EdgeInsets.all(16.0),
-        itemCount: _hasMore ? _postsList.length + 1 : _postsList.length,
-        itemBuilder: (BuildContext context, int index) {
-          // Uncomment the following line to see in real time how ListView.builder works
-          // print('ListView.builder is building index $index');
-          if (index >= _postsList.length) {
-            // Don't trigger if one async loading is already under way
-            if (_onError) {
+    return RefreshIndicator(
+      onRefresh: refresh,
+      child: ListView.builder(
+          physics: ClampingScrollPhysics(),
+          controller: _scrollBottomBarController,
+          padding: EdgeInsets.all(16.0),
+          itemCount: _hasMore ? _postsList.length + 1 : _postsList.length,
+          itemBuilder: (BuildContext context, int index) {
+            // Uncomment the following line to see in real time how ListView.builder works
+            // print('ListView.builder is building index $index');
+            if (index >= _postsList.length) {
+              // Don't trigger if one async loading is already under way
+              if (_onError) {
+                return Center(
+                  child: Text("Error: " + errorMsg),
+                );
+              }
+              if (!_isLoading) {
+                _loadMore(_currentPage);
+              }
               return Center(
-                child: Text("Error: " + errorMsg),
+                child: SizedBox(
+                  child: CircularProgressIndicator(),
+                  height: 24,
+                  width: 24,
+                ),
               );
             }
-            if (!_isLoading) {
-              _loadMore(_currentPage);
-            }
-            return Center(
-              child: SizedBox(
-                child: CircularProgressIndicator(),
-                height: 24,
-                width: 24,
-              ),
-            );
-          }
-          return _buildRow(index);
-        });
+            return _buildRow(index);
+          }),
+    );
   }
 }
