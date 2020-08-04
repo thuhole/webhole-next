@@ -12,6 +12,8 @@ abstract class HoleFetcher {
 }
 
 class PostsFetcher extends HoleFetcher {
+  dynamic lastData;
+
   Future<List<dynamic>> fetch(int page) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('thuToken');
@@ -30,7 +32,20 @@ class PostsFetcher extends HoleFetcher {
       if (j["code"] != 0) {
         throw Exception(j["msg"]);
       }
-      return j["data"];
+      List<dynamic> data = j["data"];
+      if (page == 1) {
+        lastData = data[data.length - 1];
+        return data;
+      }
+
+      List<dynamic> rtn = [];
+      for (dynamic item in data) {
+        if (lastData["timestamp"] > item["timestamp"]) {
+          rtn.add(item);
+        }
+      }
+      lastData = data[data.length - 1];
+      return rtn;
     } else {
       throw Exception('HTTP异常代码' + resp.statusCode.toString());
     }
