@@ -103,7 +103,11 @@ class HoleDetailsState extends State<HoleDetails> {
                 ),
               );
             }
-            return PostWidget(_comments[index - 1], clickable: false);
+            return PostWidget(
+              _comments[index - 1],
+              clickable: false,
+              type: "cid",
+            );
           }),
     );
   }

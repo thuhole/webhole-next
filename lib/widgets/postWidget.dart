@@ -8,19 +8,18 @@ import '../utils.dart';
 class PostWidget extends StatelessWidget {
   final dynamic postInfo;
   final bool clickable;
+  final String type;
 
-  PostWidget(this.postInfo, {this.clickable : true});
+  PostWidget(this.postInfo, {this.clickable : true, this.type: "pid"});
 
   @override
   Widget build(BuildContext context) {
     String idText = "#" + postInfo["pid"].toString();
-    String type = "pid";
-    if (postInfo["reply"] == null) {
+    if (type == "cid") {
       // is comment
       postInfo["reply"] = 0;
       postInfo["likenum"] = 0;
       idText = "#" + postInfo["cid"].toString();
-      type = "cid";
     }
     return Hero(
       tag: type + idText,
