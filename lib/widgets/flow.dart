@@ -118,7 +118,10 @@ class FlowChunkState extends State<FlowChunk> {
           padding: EdgeInsets.symmetric(vertical: 16.0),
           itemCount: _hasMore ? _postsList.length + 1 : _postsList.length,
           itemBuilder: (BuildContext context, int index) {
-            if (index >= _postsList.length - 10 && !_onError && !_isLoading) {
+            if (index >= _postsList.length - 10 &&
+                !_onError &&
+                !_isLoading &&
+                _hasMore) {
               // preload
               _loadMore(_currentPage);
             }

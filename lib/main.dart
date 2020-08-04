@@ -35,7 +35,11 @@ class HomeWidget extends StatefulWidget {
 class _HomeWidgetState extends State<HomeWidget> {
   ScrollController _timelineScrollController;
   ScrollController _attentionScrollController;
-  double _containerMaxHeight = 56, _offset, _delta = 0, _oldOffset = 0;
+  double _containerMaxHeight = 56,
+      _offset,
+      _oldDelta = 0,
+      _delta = 0,
+      _oldOffset = 0;
 
   int _selectedIndex = 0;
   final GlobalKey<FlowChunkState> _keyPosts = GlobalKey();
@@ -79,11 +83,12 @@ class _HomeWidgetState extends State<HomeWidget> {
           _delta = _containerMaxHeight;
         else if (_delta < 0) _delta = 0;
         _oldOffset = offset;
-        if (_delta == 0 || _delta == _containerMaxHeight) {
+        if (_delta != _oldDelta) {
           setState(() {
             _offset = -_delta;
           });
         }
+        _oldDelta = _delta;
       });
     _attentionScrollController = ScrollController()
       ..addListener(() {
@@ -93,11 +98,12 @@ class _HomeWidgetState extends State<HomeWidget> {
           _delta = _containerMaxHeight;
         else if (_delta < 0) _delta = 0;
         _oldOffset = offset;
-        if (_delta == 0 || _delta == _containerMaxHeight) {
+        if (_delta != _oldDelta) {
           setState(() {
             _offset = -_delta;
           });
         }
+        _oldDelta = _delta;
       });
     postsWidget =
         FlowChunk(_keyPosts, this._timelineScrollController, PostsFetcher());
