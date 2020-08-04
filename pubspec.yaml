@@ -29,11 +29,12 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.3
   english_words: ^3.1.5
-  shared_preferences:
-  http:
-  flutter_colorpicker:
-  transparent_image:
-  flutter_speed_dial:
+  shared_preferences: ^0.5.8
+  http: ^0.12.2
+  flutter_colorpicker: ^0.3.4
+  transparent_image: ^1.0.0
+  flutter_speed_dial: ^1.2.5
+  draggable_scrollbar: ^0.0.4
 
 dev_dependencies:
   flutter_test:

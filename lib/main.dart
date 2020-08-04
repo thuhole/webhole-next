@@ -17,16 +17,17 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
 //        //main color
 //          primaryColor: const Color(0xffFFC600),
-          //main font
-          fontFamily: 'Roboto-Medium',
+        //main font
+        fontFamily: 'Roboto-Medium',
 //          //swatch stretching
 //          primarySwatch: goldenThemeColor,
 //          visualDensity: VisualDensity.adaptivePlatformDensity,
 
 //          splashColor:  const Color(0xffFFC600),
 
-          //color for scrollbar
-          highlightColor: Colors.black),
+        //color for scrollbar
+//          highlightColor: Colors.black
+      ),
       home: HomeWidget(),
     );
   }

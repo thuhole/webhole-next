@@ -1,3 +1,4 @@
+import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:webhole/network.dart';
@@ -157,10 +158,14 @@ class HoleDetailsState extends State<HoleDetails> {
   }
 
   Widget _buildPosts() {
+    ScrollController _rrectController = ScrollController();
     return RefreshIndicator(
       onRefresh: refresh,
-      child: Scrollbar(
+      child: DraggableScrollbar.rrect(
+        controller: _rrectController,
+        backgroundColor: Colors.black,
         child: ListView.builder(
+            controller: _rrectController,
             physics: ClampingScrollPhysics(),
             padding: EdgeInsets.only(
                 top: 16.0 + MediaQuery.of(context).padding.top, bottom: 16.0),
