@@ -8,8 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:webhole/config.dart';
 import 'package:webhole/network.dart';
 
-import 'flow.dart';
-import 'settings.dart';
+import 'widgets/flow.dart';
+import 'widgets/settings.dart';
 
 void main() {
   SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
