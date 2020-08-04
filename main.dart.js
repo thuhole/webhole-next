@@ -11004,14 +11004,16 @@ t=new E.aH(new Float64Array(16))
 t.aY(a)
 t.iS(t)
 return T.mv(t,b)},
-a_M:function(){var t=0,s=P.a5(u.z),r,q
+a_M:function(){var t=0,s=P.a5(u.z),r,q,p
 var $async$a_M=P.a0(function(a,b){if(a===1)return P.a2(b,s)
 while(true)switch(t){case 0:t=2
 return P.a9(V.j9(),$async$a_M)
 case 2:r=b.a
 q=J.au(r)
-$.oE=new P.e((q.h(r,"primaryColor")&4294967295)>>>0)
-$.wO=new P.e((q.h(r,"secondaryColor")&4294967295)>>>0)
+p=q.h(r,"primaryColor")
+r=q.h(r,"secondaryColor")
+if(p!=null)$.oE=new P.e((p&4294967295)>>>0)
+if(r!=null)$.wO=new P.e((r&4294967295)>>>0)
 return P.a3(null,s)}})
 return P.a4($async$a_M,s)}},K={
 aaz:function(a,b){a.bL(u.q9)
