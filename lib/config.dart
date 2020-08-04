@@ -5,8 +5,8 @@ const String UA = "webhole-flutter";
 const THUHOLE_API_BASE = "https://thuhole.com/services/thuhole";
 const THUHOLE_IMAGE_BASE = "https://thimg.yecdn.com/";
 Color primaryColor = Colors.amber;
-Color secondaryColor = Colors.green;
-Color backgroundColor = Colors.blueGrey;
+Color secondaryColor = Colors.blueAccent;
+Color backgroundColor = Colors.white;
 
 void initColor() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -115,6 +115,7 @@ class FlowChunkState extends State<FlowChunk> {
 //    Color color = Color.fromRGBO(141, 163, 210, 1);
     return Center(
       child: Card(
+        elevation: 10,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         margin: EdgeInsets.symmetric(vertical: 12.0, horizontal: 0.0),
         shape: RoundedRectangleBorder(
@@ -151,22 +152,22 @@ class FlowChunkState extends State<FlowChunk> {
                               _postsList[index]["timestamp"])),
                     ),
                     Spacer(),
-                    Icon(
+                    _postsList[index]["reply"] > 0 ? Icon(
                       Icons.comment,
                       size: 20,
-                    ),
-                    Padding(
+                    ) : Container(),
+                    _postsList[index]["reply"] > 0 ? Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: Text(_postsList[index]["reply"].toString()),
-                    ),
-                    Icon(
+                    ) : Container(),
+                    _postsList[index]["likenum"] > 0 ? Icon(
                       Icons.star,
                       size: 20,
-                    ),
-                    Padding(
+                    ) : Container(),
+                    _postsList[index]["likenum"] > 0 ? Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: Text(_postsList[index]["likenum"].toString()),
-                    ),
+                    ) : Container(),
                   ],
                 ),
               ),
