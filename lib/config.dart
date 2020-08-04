@@ -6,7 +6,7 @@ const THUHOLE_API_BASE = "https://thuhole.com/services/thuhole";
 const THUHOLE_IMAGE_BASE = "https://thimg.yecdn.com/";
 Color primaryColor = Colors.amber;
 Color secondaryColor = Colors.blueAccent;
-Color backgroundColor = Colors.white;
+Color backgroundColor = Colors.grey[50];
 
 void initColor() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();

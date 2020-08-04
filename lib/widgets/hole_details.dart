@@ -76,11 +76,11 @@ class HoleDetailsState extends State<HoleDetails> {
   Widget build(BuildContext context) {
     print("flow build");
     return Scaffold(
-      appBar: AppBar(
-        title: Text('#' + info["pid"].toString()),
-//        toolbarHeight: 0,
-        backgroundColor: primaryColor,
-      ),
+//      appBar: AppBar(
+//        title: Text('#' + info["pid"].toString()),
+////        toolbarHeight: 0,
+//        backgroundColor: primaryColor,
+//      ),
       body: Container(
           decoration: new BoxDecoration(color: backgroundColor),
           child: _buildPosts()),
@@ -92,7 +92,8 @@ class HoleDetailsState extends State<HoleDetails> {
       onRefresh: refresh,
       child: ListView.builder(
           physics: ClampingScrollPhysics(),
-          padding: EdgeInsets.symmetric(vertical: 16.0),
+          padding: EdgeInsets.only(
+              top: 16.0 + MediaQuery.of(context).padding.top, bottom: 16.0),
           itemCount: _isLoading ? _comments.length + 2 : _comments.length + 1,
           itemBuilder: (BuildContext context, int index) {
             if (index == 0) {

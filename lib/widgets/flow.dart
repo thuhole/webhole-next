@@ -27,10 +27,17 @@ class FlowChunkState extends State<FlowChunk> {
   bool _isLoading = true;
   bool _hasMore = true;
   bool _onError = false;
+  bool _disposed = false;
   String errorMsg;
   int _currentPage = 1;
 
   FlowChunkState(this._scrollBottomBarController, this._itemFetcher);
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -67,12 +74,14 @@ class FlowChunkState extends State<FlowChunk> {
         });
       }
     }).catchError((e) {
-      setState(() {
-        _isLoading = false;
-        _onError = true;
-        errorMsg = e.toString();
-        print(e);
-      });
+      if (!_disposed) {
+        setState(() {
+          _isLoading = false;
+          _onError = true;
+          errorMsg = e.toString();
+          print(e);
+        });
+      }
     });
   }
 
@@ -115,7 +124,8 @@ class FlowChunkState extends State<FlowChunk> {
       child: ListView.builder(
           physics: ClampingScrollPhysics(),
           controller: _scrollBottomBarController,
-          padding: EdgeInsets.symmetric(vertical: 16.0),
+          padding: EdgeInsets.only(
+              top: 16.0 + MediaQuery.of(context).padding.top, bottom: 16.0),
           itemCount: _hasMore ? _postsList.length + 1 : _postsList.length,
           itemBuilder: (BuildContext context, int index) {
             if (index >= _postsList.length - 10 &&
