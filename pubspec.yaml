@@ -32,6 +32,7 @@ dependencies:
   shared_preferences:
   http:
   flutter_colorpicker:
+  transparent_image:
 
 dev_dependencies:
   flutter_test:

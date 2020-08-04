@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'package:webhole/config.dart';
 import 'package:webhole/utils.dart';
 
@@ -184,11 +185,21 @@ class FlowChunkState extends State<FlowChunk> {
                     )
                   : Container(),
               _postsList[index]["type"] == "image"
-                  ? Container(
-                      child: Image.network(
-                        THUHOLE_IMAGE_BASE +
-                            _postsList[index]["url"].toString(),
-                      ),
+                  ? Stack(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                        Center(
+                          child: FadeInImage.memoryNetwork(
+                            fadeInDuration: const Duration(milliseconds: 300),
+                            placeholder: kTransparentImage,
+                            image: THUHOLE_IMAGE_BASE +
+                                _postsList[index]["url"].toString(),
+                          ),
+                        ),
+                      ],
                     )
                   : Container(),
             ],
@@ -207,23 +218,21 @@ class FlowChunkState extends State<FlowChunk> {
           padding: EdgeInsets.all(16.0),
           itemCount: _hasMore ? _postsList.length + 1 : _postsList.length,
           itemBuilder: (BuildContext context, int index) {
-            // Uncomment the following line to see in real time how ListView.builder works
-            // print('ListView.builder is building index $index');
+            if (index >= _postsList.length - 10 && !_onError && !_isLoading) {
+              // preload
+              _loadMore(_currentPage);
+            }
             if (index >= _postsList.length) {
-              // Don't trigger if one async loading is already under way
               if (_onError) {
                 return Center(
                   child: Text("Error: " + errorMsg),
                 );
               }
-              if (!_isLoading) {
-                _loadMore(_currentPage);
-              }
               return Center(
                 child: SizedBox(
                   child: CircularProgressIndicator(),
-                  height: 24,
-                  width: 24,
+                  height: 32,
+                  width: 32,
                 ),
               );
             }
