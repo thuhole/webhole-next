@@ -29,7 +29,6 @@ class HoleDetailsState extends State<HoleDetails> {
   void initState() {
     super.initState();
     _isLoading = true;
-    info["notClickable"] = true;
     load();
   }
 
@@ -71,7 +70,7 @@ class HoleDetailsState extends State<HoleDetails> {
       appBar: AppBar(
         title: Text('#' + info["pid"].toString()),
 //        toolbarHeight: 0,
-        backgroundColor: secondaryColor,
+        backgroundColor: primaryColor,
       ),
       body: Container(
           decoration: new BoxDecoration(color: backgroundColor),
@@ -88,7 +87,7 @@ class HoleDetailsState extends State<HoleDetails> {
           itemCount: _isLoading ? _comments.length + 2 : _comments.length + 1,
           itemBuilder: (BuildContext context, int index) {
             if (index == 0) {
-              return PostWidget(info);
+              return PostWidget(info, clickable: false);
             }
             if (index >= _comments.length + 1) {
               if (_onError) {
@@ -104,7 +103,7 @@ class HoleDetailsState extends State<HoleDetails> {
                 ),
               );
             }
-            return PostWidget(_comments[index - 1]);
+            return PostWidget(_comments[index - 1], clickable: false);
           }),
     );
   }
