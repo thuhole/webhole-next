@@ -74,7 +74,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           Card(
             elevation: 4,
             child: ListTile(
-              title: Text("北京颜色"),
+              title: Text("背景颜色"),
               trailing: CircleAvatar(
                 backgroundColor: backgroundColor,
               ),
