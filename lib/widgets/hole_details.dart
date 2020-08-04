@@ -23,7 +23,14 @@ class HoleDetailsState extends State<HoleDetails> {
 
   bool _isLoading = true;
   bool _onError = false;
+  bool _disposed = false;
   String errorMsg;
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -54,12 +61,14 @@ class HoleDetailsState extends State<HoleDetails> {
         });
       }
     }).catchError((e) {
-      setState(() {
-        _isLoading = false;
-        _onError = true;
-        errorMsg = e.toString();
-        print(e);
-      });
+      if (!_disposed) {
+        setState(() {
+          _isLoading = false;
+          _onError = true;
+          errorMsg = e.toString();
+          print(e);
+        });
+      }
     });
   }
 
