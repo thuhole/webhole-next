@@ -118,36 +118,38 @@ class FlowChunkState extends State<FlowChunk> {
   Widget _buildPosts() {
     return RefreshIndicator(
       onRefresh: refresh,
-      child: ListView.builder(
-          physics: ClampingScrollPhysics(),
-          controller: _scrollBottomBarController,
-          padding: EdgeInsets.only(
-              top: 16.0 + MediaQuery.of(context).padding.top, bottom: 16.0),
-          itemCount: _hasMore ? _postsList.length + 1 : _postsList.length,
-          itemBuilder: (BuildContext context, int index) {
-            if (index >= _postsList.length - 10 &&
-                !_onError &&
-                !_isLoading &&
-                _hasMore) {
-              // preload
-              _loadMore(_currentPage);
-            }
-            if (index >= _postsList.length) {
-              if (_onError) {
+      child: Scrollbar(
+        child: ListView.builder(
+            physics: ClampingScrollPhysics(),
+            controller: _scrollBottomBarController,
+            padding: EdgeInsets.only(
+                top: 16.0 + MediaQuery.of(context).padding.top, bottom: 16.0),
+            itemCount: _hasMore ? _postsList.length + 1 : _postsList.length,
+            itemBuilder: (BuildContext context, int index) {
+              if (index >= _postsList.length - 10 &&
+                  !_onError &&
+                  !_isLoading &&
+                  _hasMore) {
+                // preload
+                _loadMore(_currentPage);
+              }
+              if (index >= _postsList.length) {
+                if (_onError) {
+                  return Center(
+                    child: Text("Error: " + errorMsg),
+                  );
+                }
                 return Center(
-                  child: Text("Error: " + errorMsg),
+                  child: SizedBox(
+                    child: CircularProgressIndicator(),
+                    height: 32,
+                    width: 32,
+                  ),
                 );
               }
-              return Center(
-                child: SizedBox(
-                  child: CircularProgressIndicator(),
-                  height: 32,
-                  width: 32,
-                ),
-              );
-            }
-            return PostWidget(_postsList[index]);
-          }),
+              return PostWidget(_postsList[index]);
+            }),
+      ),
     );
   }
 }

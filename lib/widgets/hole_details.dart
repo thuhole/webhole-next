@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:webhole/network.dart';
 
 import '../config.dart';
@@ -76,60 +77,119 @@ class HoleDetailsState extends State<HoleDetails> {
   Widget build(BuildContext context) {
     print("flow build");
     return Scaffold(
-//      appBar: AppBar(
-//        title: Text('#' + info["pid"].toString()),
-////        toolbarHeight: 0,
-//        backgroundColor: primaryColor,
-//      ),
-      floatingActionButton: new FloatingActionButton(
-        child: Icon(
-          Icons.arrow_back_ios,
-        ),
+      floatingActionButton: SpeedDial(
+        // both default to 16
+//        marginRight: 18,
+//        marginBottom: 20,
+        animatedIcon: AnimatedIcons.menu_close,
+//        animatedIconTheme: IconThemeData(size: 22.0),
+        // this is ignored if animatedIcon is non null
+        // child: Icon(Icons.add),
+        visible: true,
+        // If true user is forced to close dial manually
+        // by tapping main button and overlay is not rendered.
+        closeManually: false,
+//        curve: Curves.bounceIn,
+        overlayColor: Colors.white,
+        overlayOpacity: 0.5,
+        onOpen: () => print('OPENING DIAL'),
+        onClose: () => print('DIAL CLOSED'),
+        tooltip: 'Speed Dial',
+        heroTag: 'speed-dial-hero-tag',
         backgroundColor: secondaryColor,
-        elevation: 10,
-        onPressed: () {
-          Navigator.pop(context);
-        },
+        foregroundColor: Colors.white,
+        elevation: 8.0,
+        shape: CircleBorder(),
+        children: [
+          SpeedDialChild(
+              child: Icon(Icons.report_problem),
+              backgroundColor: Colors.red,
+              label: '举报',
+//              labelStyle: TextStyle(fontSize: 18.0),
+              onTap: () => print('FIRST CHILD')),
+          SpeedDialChild(
+            child: Icon(Icons.sort),
+            backgroundColor: secondaryColor,
+            label: '逆序',
+//            labelStyle: TextStyle(fontSize: 18.0),
+            onTap: () => print('SECOND CHILD'),
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.refresh),
+            backgroundColor: secondaryColor,
+            label: '刷新',
+//            labelStyle: TextStyle(fontSize: 18.0),
+            onTap: () => print('THIRD CHILD'),
+          ),
+        ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-      body: Container(
-          decoration: BoxDecoration(color: backgroundColor),
-          child: _buildPosts()),
+      body: Stack(
+        children: [
+          Container(
+              decoration: BoxDecoration(color: backgroundColor),
+              child: _buildPosts()),
+          Align(
+            alignment: AlignmentDirectional.bottomStart,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Semantics(
+                button: true,
+                enabled: true,
+                excludeSemantics: true,
+                child: FloatingActionButton.extended(
+                  key: const ValueKey('Back'),
+                  onPressed: () {
+                    Navigator.of(context)
+                        .popUntil((route) => route.settings.name == '/');
+                  },
+                  icon: const BackButtonIcon(),
+                  label: Text(
+                    MaterialLocalizations.of(context).backButtonTooltip,
+                  ),
+                  backgroundColor: secondaryColor,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildPosts() {
     return RefreshIndicator(
       onRefresh: refresh,
-      child: ListView.builder(
-          physics: ClampingScrollPhysics(),
-          padding: EdgeInsets.only(
-              top: 16.0 + MediaQuery.of(context).padding.top, bottom: 16.0),
-          itemCount: _isLoading ? _comments.length + 2 : _comments.length + 1,
-          itemBuilder: (BuildContext context, int index) {
-            if (index == 0) {
-              return PostWidget(info, clickable: false);
-            }
-            if (index >= _comments.length + 1) {
-              if (_onError) {
+      child: Scrollbar(
+        child: ListView.builder(
+            physics: ClampingScrollPhysics(),
+            padding: EdgeInsets.only(
+                top: 16.0 + MediaQuery.of(context).padding.top, bottom: 16.0),
+            itemCount: _isLoading ? _comments.length + 2 : _comments.length + 1,
+            itemBuilder: (BuildContext context, int index) {
+              if (index == 0) {
+                return PostWidget(info, clickable: false);
+              }
+              if (index >= _comments.length + 1) {
+                if (_onError) {
+                  return Center(
+                    child: Text("Error: " + errorMsg),
+                  );
+                }
                 return Center(
-                  child: Text("Error: " + errorMsg),
+                  child: SizedBox(
+                    child: CircularProgressIndicator(),
+                    height: 32,
+                    width: 32,
+                  ),
                 );
               }
-              return Center(
-                child: SizedBox(
-                  child: CircularProgressIndicator(),
-                  height: 32,
-                  width: 32,
-                ),
+              return PostWidget(
+                _comments[index - 1],
+                clickable: false,
+                type: "cid",
               );
-            }
-            return PostWidget(
-              _comments[index - 1],
-              clickable: false,
-              type: "cid",
-            );
-          }),
+            }),
+      ),
     );
   }
 }

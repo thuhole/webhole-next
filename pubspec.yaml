@@ -33,6 +33,7 @@ dependencies:
   http:
   flutter_colorpicker:
   transparent_image:
+  flutter_speed_dial:
 
 dev_dependencies:
   flutter_test:

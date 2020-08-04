@@ -14,6 +14,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+//        //main color
+//          primaryColor: const Color(0xffFFC600),
+          //main font
+          fontFamily: 'Roboto-Medium',
+//          //swatch stretching
+//          primarySwatch: goldenThemeColor,
+//          visualDensity: VisualDensity.adaptivePlatformDensity,
+
+//          splashColor:  const Color(0xffFFC600),
+
+          //color for scrollbar
+          highlightColor: Colors.black),
       home: HomeWidget(),
     );
   }
