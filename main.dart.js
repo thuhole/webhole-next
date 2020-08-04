@@ -50854,7 +50854,7 @@ if(J.d(e.h(f,"type"),"image")){n=U.a13(h,h,h,h,4,h,h)
 m=$.a9X()
 f=C.c.J("https://thimg.yecdn.com/",J.b7(e.h(f,"url")))
 f=T.hM(C.c1,H.a([new T.b4(C.lG,new T.cX(C.J,h,h,n,h),h),new T.cX(C.J,h,h,new B.yU(M.a5B(h,h,new M.iV(m,1)),M.a5B(h,h,new D.mF(f,1)),C.b5,h),h)],j),C.by,h)}else f=M.bh(h,h,h,h,h,h,h,h,h,h,h)
-return T.a4y(M.iS(C.C,!0,new T.cX(C.J,h,h,V.xN(R.a1q(!1,!0,T.y2(H.a([p,new Z.yw(0,1,C.mM,h),o,f],j),C.bC,C.hr,C.mL),h,!0,h,h,h,h,h,h,h,h,h,new R.QK(this,a),q),C.lv,10,new V.a3(0,12,0,12),new X.cc(new K.bs(r,r,r,r),C.r)),h),C.a5,h,0,h,C.k,h,h,C.bS),s)}}
+return T.a4y(M.iS(C.C,!0,new T.cX(C.J,h,h,V.xN(R.a1q(!1,!0,T.y2(H.a([p,new Z.yw(0,1,C.mM,h),o,f],j),C.bC,C.hr,C.mL),h,!0,h,h,h,h,h,h,h,h,h,new R.QK(this,a),q),C.lv,8,new V.a3(0,0,0,20),new X.cc(new K.bs(r,r,r,r),C.r)),h),C.a5,h,0,h,C.k,h,h,C.bS),s)}}
 R.QK.prototype={
 $0:function(){var t,s,r
 P.e7("Card tapped.")
