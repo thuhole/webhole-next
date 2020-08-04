@@ -115,7 +115,7 @@ class FlowChunkState extends State<FlowChunk> {
       child: ListView.builder(
           physics: ClampingScrollPhysics(),
           controller: _scrollBottomBarController,
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.symmetric(vertical: 16.0),
           itemCount: _hasMore ? _postsList.length + 1 : _postsList.length,
           itemBuilder: (BuildContext context, int index) {
             if (index >= _postsList.length - 10 && !_onError && !_isLoading) {

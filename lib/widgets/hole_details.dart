@@ -83,7 +83,7 @@ class HoleDetailsState extends State<HoleDetails> {
       onRefresh: refresh,
       child: ListView.builder(
           physics: ClampingScrollPhysics(),
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.symmetric(vertical: 16.0),
           itemCount: _isLoading ? _comments.length + 2 : _comments.length + 1,
           itemBuilder: (BuildContext context, int index) {
             if (index == 0) {

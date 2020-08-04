@@ -30,7 +30,7 @@ class PostWidget extends StatelessWidget {
           child: Card(
             elevation: 8,
             clipBehavior: Clip.antiAliasWithSaveLayer,
-            margin: EdgeInsets.only(bottom: 20),
+            margin: EdgeInsets.only(bottom: 20, left: 16.0, right: 16.0),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(15.0)),
 //          borderRadius: BorderRadius.only(
