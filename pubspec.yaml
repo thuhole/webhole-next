@@ -35,7 +35,7 @@ dependencies:
   transparent_image: ^1.0.0
   flutter_speed_dial: ^1.2.5
   draggable_scrollbar: ^0.0.4
-  cached_network_image: ^2.2.0+1
+  cached_network_image: ^2.3.0-rc
 
 dev_dependencies:
   flutter_test:
