@@ -1,5 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:transparent_image/transparent_image.dart';
 import 'package:webhole/widgets/hole_details.dart';
 
 import '../config.dart';
@@ -116,23 +116,34 @@ class PostWidget extends StatelessWidget {
                           )
                         : Container(),
                     postInfo["type"] == "image"
-                        ? Stack(
-                            children: <Widget>[
-                              Padding(
+                        ? Center(
+                            child: CachedNetworkImage(
+                              imageUrl: getImageBase(postInfo["holeType"]) +
+                                  postInfo["url"].toString(),
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) => Padding(
                                 padding: const EdgeInsets.all(16.0),
-                                child:
-                                    Center(child: CircularProgressIndicator()),
+                                child: CircularProgressIndicator(
+                                    value: downloadProgress.progress),
                               ),
-                              Center(
-                                child: FadeInImage.memoryNetwork(
-                                  fadeInDuration:
-                                      const Duration(milliseconds: 300),
-                                  placeholder: kTransparentImage,
-                                  image: getImageBase(postInfo["holeType"]) +
-                                      postInfo["url"].toString(),
+                              errorWidget: (context, url, error) => Container(
+                                color: Colors.yellowAccent,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.error_outline,
+                                        size: 48.0,
+                                        color: Colors.black,
+                                      ),
+                                      Text("图片加载失败")
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ],
+                            ),
                           )
                         : Container(),
                   ],

@@ -27,7 +27,7 @@ extension HoleTypeExtension on HoleType {
 }
 
 Color getHoleTypeColor(HoleType type) {
-  return type == HoleType.p ? Colors.redAccent : Colors.purpleAccent;
+  return type == HoleType.p ? Colors.red[400] : Colors.purple[400];
 }
 
 String getImageBase(HoleType type) {
