@@ -168,11 +168,14 @@ class HoleDetailsState extends State<HoleDetails> {
             controller: _rrectController,
             physics: ClampingScrollPhysics(),
             padding: EdgeInsets.only(
-                top: 16.0 + MediaQuery.of(context).padding.top, bottom: 16.0),
+                top: 16.0 + MediaQuery.of(context).padding.top, bottom: 60.0),
             itemCount: _isLoading ? _comments.length + 2 : _comments.length + 1,
             itemBuilder: (BuildContext context, int index) {
               if (index == 0) {
-                return PostWidget(info, clickable: false);
+                return PostWidget(
+                  info,
+                  isDetailMode: true,
+                );
               }
               if (index >= _comments.length + 1) {
                 if (_onError) {
@@ -190,8 +193,8 @@ class HoleDetailsState extends State<HoleDetails> {
               }
               return PostWidget(
                 _comments[index - 1],
-                clickable: false,
                 type: "cid",
+                isDetailMode: true,
               );
             }),
       ),

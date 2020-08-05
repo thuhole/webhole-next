@@ -14,6 +14,7 @@ class SettingsWidget extends StatefulWidget {
 
 class _SettingsWidgetState extends State<SettingsWidget> {
   final myController = TextEditingController();
+  bool _autoUpdate = false;
   Function refreshHome;
 
   _SettingsWidgetState(this.refreshHome);
@@ -30,7 +31,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text("登录"),
+            child: Text("登录", style: TextStyle(fontSize: 18.0)),
           ),
           Card(
             elevation: 4,
@@ -45,7 +46,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text("个性化"),
+            child: Text(
+              "个性化",
+              style: TextStyle(fontSize: 18.0),
+            ),
           ),
           Card(
             elevation: 4,
@@ -82,6 +86,29 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                 showColorPicker(
                     context, backgroundColor, changeBackgroundColor);
               },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              "通用",
+              style: TextStyle(fontSize: 18.0),
+            ),
+          ),
+          Card(
+            elevation: 4,
+            child: ListTile(
+              title: Text("自动检查更新"),
+              subtitle: Text("To be implemented"),
+              trailing: Switch(
+                value: _autoUpdate,
+                onChanged: (value) {
+                  setState(() {
+                    _autoUpdate = value;
+                    print("TODO");
+                  });
+                },
+              ),
             ),
           ),
         ],
@@ -123,12 +150,6 @@ class _SettingsWidgetState extends State<SettingsWidget> {
       child: AlertDialog(
         title: const Text('Pick a color!'),
         content: SingleChildScrollView(
-//          child: ColorPicker(
-//            pickerColor: pickerColor,
-//            onColorChanged: changeColor,
-//            showLabel: true,
-//            pickerAreaHeightPercent: 0.8,
-//          ),
           // Use Material color picker:
           //
           child: MaterialPicker(
@@ -136,18 +157,6 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             onColorChanged: changeColor,
 //             showLabel: true, // only on portrait mode
           ),
-          //
-          // Use Block color picker:
-          //
-          // child: BlockPicker(
-          //   pickerColor: currentColor,
-          //   onColorChanged: changeColor,
-          // ),
-          //
-          // child: MultipleChoiceBlockPicker(
-          //   pickerColors: currentColors,
-          //   onColorsChanged: changeColors,
-          // ),
         ),
         actions: <Widget>[
           FlatButton(
