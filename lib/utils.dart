@@ -2,6 +2,10 @@ Future<String> tokenParams(String token) async {
   return '&user_token=' + token;
 }
 
+bool isValidToken(String token) {
+  return token != null && token.length == 32;
+}
+
 String getDateDiff(int diffValue) {
   int minute = 60;
   int hour = minute * 60;

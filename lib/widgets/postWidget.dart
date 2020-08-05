@@ -55,8 +55,7 @@ class PostWidget extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      decoration: new BoxDecoration(
-                          color: type == "cid" ? secondaryColor : primaryColor),
+                      decoration: new BoxDecoration(color: postInfo["color"]),
                       padding: const EdgeInsets.symmetric(
                           vertical: 12, horizontal: 0),
                       child: Row(

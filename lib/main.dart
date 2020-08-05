@@ -113,10 +113,16 @@ class _HomeWidgetState extends State<HomeWidget> {
         }
         _oldDelta = _delta;
       });
-    postsWidget =
-        FlowChunk(_keyPosts, this._timelineScrollController, PostsFetcher());
+    postsWidget = FlowChunk(
+        _keyPosts,
+        this._timelineScrollController,
+        MergedHoleFetcher(
+            [PostsFetcher(HoleType.t), PostsFetcher(HoleType.p)]));
     attentionWidget = FlowChunk(
-        _keyAttention, this._attentionScrollController, AttentionFetcher());
+        _keyAttention,
+        this._attentionScrollController,
+        MergedHoleFetcher(
+            [AttentionFetcher(HoleType.t), AttentionFetcher(HoleType.p)]));
     settingsWidget = SettingsWidget(refresh);
   }
 

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:webhole/config.dart';
+
+import '../config.dart';
 
 class SettingsWidget extends StatefulWidget {
   final Function refreshHome;
@@ -15,9 +16,20 @@ class SettingsWidget extends StatefulWidget {
 class _SettingsWidgetState extends State<SettingsWidget> {
   final myController = TextEditingController();
   bool _autoUpdate = false;
+  bool _hasThuToken = false;
+  bool _hasPkuToken = false;
   Function refreshHome;
 
   _SettingsWidgetState(this.refreshHome);
+
+  @override
+  void initState() {
+    super.initState();
+//    setState(() async {
+//      _hasPkuToken = isValidToken(await HoleType.p.getToken());
+//      _hasThuToken = isValidToken(await HoleType.t.getToken());
+//    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +48,34 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           Card(
             elevation: 4,
             child: ListTile(
-              title: Text("Token登录"),
-              subtitle: Text("从其他设备导入登录状态"),
+              title: Text("T大树洞 Token登录"),
+              subtitle: Text(_hasThuToken ? "已登录" : "从其他设备导入登录状态"),
               trailing: Icon(Icons.chevron_right),
               onTap: () {
-                showDialog(context: context, builder: inputTokenDialog);
+                showDialog(
+                    context: context,
+                    builder: (w) {
+                      return TokenForm(
+                        type: HoleType.t,
+                      );
+                    });
+              },
+            ),
+          ),
+          Card(
+            elevation: 4,
+            child: ListTile(
+              title: Text("P大树洞 Token登录"),
+              subtitle: Text(_hasPkuToken ? "已登录" : "从其他设备导入登录状态"),
+              trailing: Icon(Icons.chevron_right),
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (w) {
+                      return TokenForm(
+                        type: HoleType.p,
+                      );
+                    });
               },
             ),
           ),
@@ -172,13 +207,13 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   }
 }
 
-Widget inputTokenDialog(BuildContext context) {
-  return TokenForm();
-}
-
 class TokenForm extends StatefulWidget {
+  final HoleType type;
+
+  TokenForm({this.type: HoleType.t});
+
   @override
-  _TokenFormState createState() => _TokenFormState();
+  _TokenFormState createState() => _TokenFormState(type);
 }
 
 // Define a corresponding State class.
@@ -187,6 +222,9 @@ class _TokenFormState extends State<TokenForm> {
   // Create a text controller and use it to retrieve the current value
   // of the TextField.
   final textController = TextEditingController();
+  final HoleType type;
+
+  _TokenFormState(this.type);
 
   @override
   void dispose() {
@@ -217,7 +255,7 @@ class _TokenFormState extends State<TokenForm> {
                   width: 320.0,
                   child: RaisedButton(
                     onPressed: () {
-                      _saveToken(textController.text);
+                      _saveThuToken(type, textController.text);
                       Navigator.pop(context);
                     },
                     child: Text(
@@ -236,7 +274,7 @@ class _TokenFormState extends State<TokenForm> {
   }
 }
 
-_saveToken(String token) async {
+_saveThuToken(HoleType type, String token) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setString('thuToken', token);
+  await prefs.setString(type == HoleType.t ? 'thuToken' : 'pkuToken', token);
 }

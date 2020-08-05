@@ -33,4 +33,4 @@
 - [ ] 自动检查更新
 
 ## Stage 3
-- [ ] TP双Token登录
+- [x] TP双Token登录

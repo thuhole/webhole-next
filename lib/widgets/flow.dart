@@ -6,7 +6,7 @@ import '../network.dart';
 
 class FlowChunk extends StatefulWidget {
   final ScrollController _scrollBottomBarController;
-  final HoleFetcher fetcher;
+  final MergedHoleFetcher fetcher;
 
   FlowChunk(Key key, this._scrollBottomBarController, this.fetcher)
       : super(key: key);
@@ -22,14 +22,13 @@ class FlowChunkState extends State<FlowChunk> {
   ScrollController _scrollBottomBarController;
 
 //  final _biggerFont = const TextStyle(fontSize: 18.0);
-  final HoleFetcher _itemFetcher;
+  final MergedHoleFetcher _itemFetcher;
 
   bool _isLoading = true;
   bool _hasMore = true;
   bool _onError = false;
   bool _disposed = false;
   String errorMsg;
-  int _currentPage = 1;
 
   FlowChunkState(this._scrollBottomBarController, this._itemFetcher);
 
@@ -44,7 +43,8 @@ class FlowChunkState extends State<FlowChunk> {
     super.initState();
     _isLoading = true;
     _hasMore = true;
-    _loadMore(_currentPage);
+    _itemFetcher.reset();
+    _loadMore();
   }
 
   Future<void> refresh() async {
@@ -52,15 +52,15 @@ class FlowChunkState extends State<FlowChunk> {
       _isLoading = true;
       _hasMore = true;
       _onError = false;
-      _currentPage = 1;
       _postsList = [];
-      _loadMore(_currentPage);
+      _itemFetcher.reset();
+      _loadMore();
     });
   }
 
-  void _loadMore(int page) {
+  void _loadMore() {
     _isLoading = true;
-    _itemFetcher.fetch(page).then((List<dynamic> fetchedList) {
+    _itemFetcher.fetch().then((List<dynamic> fetchedList) {
       if (fetchedList.isEmpty) {
         setState(() {
           _isLoading = false;
@@ -70,7 +70,6 @@ class FlowChunkState extends State<FlowChunk> {
         setState(() {
           _isLoading = false;
           _postsList.addAll(fetchedList);
-          _currentPage = _currentPage + 1;
         });
       }
     }).catchError((e) {
@@ -87,7 +86,8 @@ class FlowChunkState extends State<FlowChunk> {
 
   @override
   Widget build(BuildContext context) {
-    print("flow build");
+    print("flow build, item count=" +
+        (_hasMore ? _postsList.length + 1 : _postsList.length).toString());
     return Scaffold(
 //      appBar: AppBar(
 //        title: Text('树洞'),
@@ -131,7 +131,7 @@ class FlowChunkState extends State<FlowChunk> {
                   !_isLoading &&
                   _hasMore) {
                 // preload
-                _loadMore(_currentPage);
+                _loadMore();
               }
               if (index >= _postsList.length) {
                 if (_onError) {

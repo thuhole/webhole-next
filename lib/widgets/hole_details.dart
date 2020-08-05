@@ -13,7 +13,7 @@ class HoleDetails extends StatefulWidget {
 
   @override
   HoleDetailsState createState() =>
-      HoleDetailsState(this.info, CommentFetcher());
+      HoleDetailsState(this.info, CommentFetcher(this.info["holeType"]));
 }
 
 class HoleDetailsState extends State<HoleDetails> {

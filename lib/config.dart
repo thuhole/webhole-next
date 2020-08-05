@@ -2,8 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const String UA = "webhole-flutter";
+const Int32Max = 2147483647;
 const THUHOLE_API_BASE = "https://thuhole.com/services/thuhole";
 const THUHOLE_IMAGE_BASE = "https://thimg.yecdn.com/";
+const PKUHOLE_API_BASE = "https://pkuhelper.pku.edu.cn/services/pkuhole";
+const PKUHOLE_IMAGE_BASE =
+    "https://pkuhelper.pku.edu.cn/services/pkuhole/images/";
+
+enum HoleType { p, t }
+
+extension HoleTypeExtension on HoleType {
+  String getStr() {
+    return this == HoleType.p ? "pku" : "thu";
+  }
+
+  String getApiBase() {
+    return this == HoleType.p ? PKUHOLE_API_BASE : THUHOLE_API_BASE;
+  }
+
+  Future<String> getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(this == HoleType.t ? 'thuToken' : 'pkuToken');
+  }
+}
+
+Color getHoleTypeColor(HoleType type) {
+  return type == HoleType.p ? Colors.redAccent : Colors.purpleAccent;
+}
+
+String getImageBase(HoleType type) {
+  return type == HoleType.p ? PKUHOLE_IMAGE_BASE : THUHOLE_IMAGE_BASE;
+}
+
 Color primaryColor = Colors.amber;
 Color secondaryColor = Colors.blueAccent;
 Color backgroundColor = Colors.grey[50];
