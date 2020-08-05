@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:http/http.dart' as http;
@@ -43,7 +42,7 @@ class PostsFetcher extends OneHoleFetcher {
             "/api.php?action=getlist&PKUHelperAPI=3.0&p=" +
             page.toString() +
             await tokenParams(token),
-        headers: {HttpHeaders.userAgentHeader: UA});
+        headers: {});
     if (resp.statusCode == 200) {
       dynamic j = json.decode(resp.body);
       if (j["code"] != 0) {
@@ -97,7 +96,7 @@ class AttentionFetcher extends OneHoleFetcher {
         type.getApiBase() +
             "/api.php?action=getattention&PKUHelperAPI=3.0" +
             await tokenParams(token),
-        headers: {HttpHeaders.userAgentHeader: UA});
+        headers: {});
     if (resp.statusCode == 200) {
       dynamic j = json.decode(resp.body);
       if (j["code"] != 0) {
@@ -227,7 +226,7 @@ class CommentFetcher {
             "/api.php?action=getcomment&PKUHelperAPI=3.0&pid=" +
             pid.toString() +
             await tokenParams(token),
-        headers: {HttpHeaders.userAgentHeader: UA});
+        headers: {});
     if (resp.statusCode == 200) {
       dynamic j = json.decode(resp.body);
       if (j["code"] != 0) {

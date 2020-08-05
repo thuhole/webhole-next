@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const String UA = "webhole-flutter";
 const Int32Max = 2147483647;
 const THUHOLE_API_BASE = "https://thuhole.com/services/thuhole";
 const THUHOLE_IMAGE_BASE = "https://thimg.yecdn.com/";

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:webhole/widgets/hole_details.dart';
+import 'package:webhole/widgets/markdown.dart';
 
 import '../config.dart';
 import '../utils.dart';
@@ -107,11 +108,11 @@ class PostWidget extends StatelessWidget {
                         ? Container(
                             alignment: Alignment.centerLeft,
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12.0, vertical: 16.0),
-                              child: Text(postInfo["text"].toString()),
-                            ),
-                          )
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12.0, vertical: 16.0),
+//                              child: Text(postInfo["text"].toString()),
+                                child: getMarkdown(context, isDetailMode,
+                                    postInfo["text"].toString())))
                         : Container(),
                     postInfo["type"] == "image"
                         ? Center(

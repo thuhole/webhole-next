@@ -36,6 +36,8 @@ dependencies:
   flutter_speed_dial: ^1.2.5
   draggable_scrollbar: ^0.0.4
   cached_network_image: ^2.3.0-rc
+  flutter_markdown: ^0.4.3
+  markdown: ^2.1.7
 
 dev_dependencies:
   flutter_test:
