@@ -213,7 +213,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
 class TokenForm extends StatefulWidget {
   final HoleType type;
 
-  TokenForm({this.type: HoleType.t});
+  TokenForm({Key key, this.type: HoleType.t}): super(key: key);
 
   @override
   _TokenFormState createState() => _TokenFormState(type);
@@ -250,7 +250,12 @@ class _TokenFormState extends State<TokenForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextField(
-                  decoration: InputDecoration(hintText: 'Token'),
+                  decoration: InputDecoration(
+                      labelText: 'Token',
+                      hintText: '从其他设备中复制过来的Token',
+                      border: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(12.0)))),
                   controller: textController,
                   autofocus: true),
               Center(
@@ -265,7 +270,7 @@ class _TokenFormState extends State<TokenForm> {
                       "Save",
                       style: TextStyle(color: Colors.white),
                     ),
-                    color: primaryColor,
+                    color: secondaryColor,
                   ),
                 ),
               )

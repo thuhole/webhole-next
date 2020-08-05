@@ -17,8 +17,6 @@ class PostWidget extends StatelessWidget {
     String idText = "#" + postInfo["pid"].toString();
     if (type == "cid") {
       // is comment
-      postInfo["reply"] = 0;
-      postInfo["likenum"] = 0;
       idText = "#" + postInfo["cid"].toString();
     }
     return Hero(
@@ -32,7 +30,7 @@ class PostWidget extends StatelessWidget {
                 maxWidth: 500,
                 maxHeight: this.isDetailMode ? double.infinity : 1000),
             child: Card(
-              elevation: 8,
+              elevation: 8.0,
               clipBehavior: Clip.antiAliasWithSaveLayer,
               margin: EdgeInsets.only(bottom: 20, left: 16.0, right: 16.0),
               shape: RoundedRectangleBorder(
@@ -48,7 +46,7 @@ class PostWidget extends StatelessWidget {
                   print('Card tapped.');
                   if (!this.isDetailMode)
                     Navigator.push(context, MaterialPageRoute(builder: (_) {
-                      return HoleDetails(postInfo);
+                      return HoleDetails(info: postInfo);
                     }));
                 },
                 child: Column(
@@ -74,7 +72,7 @@ class PostWidget extends StatelessWidget {
                           ),
                           Spacer(),
                           postInfo["reply"] > 0
-                              ? Icon(
+                              ? const Icon(
                                   Icons.comment,
                                   size: 20,
                                 )
@@ -86,7 +84,7 @@ class PostWidget extends StatelessWidget {
                                 )
                               : Container(),
                           postInfo["likenum"] > 0
-                              ? Icon(
+                              ? const Icon(
                                   Icons.star,
                                   size: 20,
                                 )

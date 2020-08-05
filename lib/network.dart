@@ -240,6 +240,8 @@ class CommentFetcher {
         item["pid"] = int.parse(item["pid"].toString());
         item["cid"] = int.parse(item["cid"].toString());
         item["color"] = secondaryColor;
+        item["reply"] = 0;
+        item["likenum"] = 0;
         item["holeType"] = type;
         rtn.add(item);
       }

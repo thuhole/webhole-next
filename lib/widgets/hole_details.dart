@@ -9,7 +9,7 @@ import 'postWidget.dart';
 class HoleDetails extends StatefulWidget {
   final dynamic info;
 
-  HoleDetails(this.info);
+  HoleDetails({Key key, this.info}) : super(key: key);
 
   @override
   HoleDetailsState createState() =>
@@ -99,7 +99,7 @@ class HoleDetailsState extends State<HoleDetails> {
         heroTag: 'speed-dial-hero-tag',
         backgroundColor: secondaryColor,
         foregroundColor: Colors.white,
-        elevation: 8.0,
+        elevation: 4.0,
         shape: CircleBorder(),
         children: [
           SpeedDialChild(
@@ -183,9 +183,9 @@ class HoleDetailsState extends State<HoleDetails> {
                     child: Text("Error: " + errorMsg),
                   );
                 }
-                return Center(
-                  child: SizedBox(
-                    child: CircularProgressIndicator(),
+                return const Center(
+                  child: const SizedBox(
+                    child: const CircularProgressIndicator(),
                     height: 32,
                     width: 32,
                   ),
