@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:webhole/config.dart';
-import 'package:webhole/network.dart';
 
 import 'widgets/flow.dart';
 import 'widgets/settings.dart';
@@ -113,16 +112,10 @@ class _HomeWidgetState extends State<HomeWidget> {
         }
         _oldDelta = _delta;
       });
-    postsWidget = FlowChunk(
-        _keyPosts,
-        this._timelineScrollController,
-        MergedHoleFetcher(
-            [PostsFetcher(HoleType.t), PostsFetcher(HoleType.p)]));
+    postsWidget =
+        FlowChunk(_keyPosts, this._timelineScrollController, FlowType.posts);
     attentionWidget = FlowChunk(
-        _keyAttention,
-        this._attentionScrollController,
-        MergedHoleFetcher(
-            [AttentionFetcher(HoleType.t), AttentionFetcher(HoleType.p)]));
+        _keyAttention, this._attentionScrollController, FlowType.attention);
     settingsWidget = SettingsWidget(refresh);
   }
 

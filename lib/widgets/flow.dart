@@ -4,16 +4,18 @@ import 'package:webhole/widgets/postWidget.dart';
 
 import '../network.dart';
 
+enum FlowType { attention, posts }
+
 class FlowChunk extends StatefulWidget {
   final ScrollController _scrollBottomBarController;
-  final MergedHoleFetcher fetcher;
+  final FlowType _flowType;
 
-  FlowChunk(Key key, this._scrollBottomBarController, this.fetcher)
+  FlowChunk(Key key, this._scrollBottomBarController, this._flowType)
       : super(key: key);
 
   @override
-  FlowChunkState createState() =>
-      FlowChunkState(this._scrollBottomBarController, this.fetcher);
+  FlowChunkState createState() => FlowChunkState.defaultFetcher(
+      this._scrollBottomBarController, this._flowType);
 }
 
 class FlowChunkState extends State<FlowChunk> {
@@ -22,7 +24,8 @@ class FlowChunkState extends State<FlowChunk> {
   ScrollController _scrollBottomBarController;
 
 //  final _biggerFont = const TextStyle(fontSize: 18.0);
-  final MergedHoleFetcher _itemFetcher;
+  MergedHoleFetcher _itemFetcher;
+  final FlowType _flowType;
 
   bool _isLoading = true;
   bool _hasMore = true;
@@ -30,7 +33,20 @@ class FlowChunkState extends State<FlowChunk> {
   bool _disposed = false;
   String errorMsg;
 
-  FlowChunkState(this._scrollBottomBarController, this._itemFetcher);
+  FlowChunkState(
+      this._scrollBottomBarController, this._flowType, this._itemFetcher);
+
+  FlowChunkState.defaultFetcher(_scrollBottomBarController, _flowType)
+      : this(
+            _scrollBottomBarController,
+            _flowType,
+            _flowType == FlowType.posts
+                ? MergedHoleFetcher(
+                    [PostsFetcher(HoleType.t), PostsFetcher(HoleType.p)])
+                : MergedHoleFetcher([
+                    AttentionFetcher(HoleType.t),
+                    AttentionFetcher(HoleType.p)
+                  ]));
 
   @override
   void dispose() {
@@ -96,13 +112,15 @@ class FlowChunkState extends State<FlowChunk> {
 //      ),
 
 //        body: _buildSuggestions()
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add your onPressed code here!
-        },
-        child: Icon(Icons.add),
-        backgroundColor: secondaryColor,
-      ),
+      floatingActionButton: _flowType == FlowType.posts
+          ? FloatingActionButton(
+              onPressed: () {
+                // Add your onPressed code here!
+              },
+              child: Icon(Icons.add),
+              backgroundColor: secondaryColor,
+            )
+          : null,
       body: Container(
 //          decoration: BoxDecoration(
 //            image: DecorationImage(
