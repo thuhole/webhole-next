@@ -129,6 +129,8 @@ class MergedHoleFetcher extends HoleFetcher {
   int currentTimestamp;
   int length;
 
+  bool resetting = false;
+
   MergedHoleFetcher(List<OneHoleFetcher> fetchers) {
     if (fetchers.length == 0) {
       throw Exception("No fetcher!");
@@ -188,7 +190,8 @@ class MergedHoleFetcher extends HoleFetcher {
   }
 
   Future<void> reset() async {
-    print("reset");
+    if (this.resetting == true) return;
+    resetting = true;
     for (OneHoleFetcher fetcher in fetchers) {
       fetcher.reset();
     }
@@ -205,6 +208,7 @@ class MergedHoleFetcher extends HoleFetcher {
       fetchersResults.add([]);
     }
     currentTimestamp = Int32Max;
+    resetting = false;
   }
 }
 
