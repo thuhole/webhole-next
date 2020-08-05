@@ -94,6 +94,8 @@ class _HomeWidgetState extends State<HomeWidget> {
           setState(() {
             _offset = -_delta;
           });
+          if (_delta == 0 || _delta == _containerMaxHeight)
+            _keyPosts.currentState.setShowAppbar(_delta == 0);
         }
         _oldDelta = _delta;
       });
@@ -109,6 +111,8 @@ class _HomeWidgetState extends State<HomeWidget> {
           setState(() {
             _offset = -_delta;
           });
+          if (_delta == 0 || _delta == _containerMaxHeight)
+            _keyAttention.currentState.setShowAppbar(_delta == 0);
         }
         _oldDelta = _delta;
       });

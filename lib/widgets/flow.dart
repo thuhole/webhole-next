@@ -23,7 +23,6 @@ class FlowChunkState extends State<FlowChunk> {
 
   ScrollController _scrollBottomBarController;
 
-//  final _biggerFont = const TextStyle(fontSize: 18.0);
   MergedHoleFetcher _itemFetcher;
   final FlowType _flowType;
 
@@ -31,6 +30,7 @@ class FlowChunkState extends State<FlowChunk> {
   bool _hasMore = true;
   bool _onError = false;
   bool _disposed = false;
+  bool _showAppBar = true;
   String errorMsg;
 
   FlowChunkState(
@@ -68,9 +68,16 @@ class FlowChunkState extends State<FlowChunk> {
       _isLoading = true;
       _hasMore = true;
       _onError = false;
+      _showAppBar = true;
       _postsList = [];
       _itemFetcher.reset();
       _loadMore();
+    });
+  }
+
+  Future<void> setShowAppbar(bool show) async {
+    setState(() {
+      _showAppBar = show;
     });
   }
 
@@ -110,8 +117,12 @@ class FlowChunkState extends State<FlowChunk> {
 //        toolbarHeight: 0,
 //        backgroundColor: secondaryColor,
 //      ),
-
-//        body: _buildSuggestions()
+      appBar: _showAppBar
+          ? AppBar(
+              backgroundColor: primaryColor,
+              title: buildSearch(),
+            )
+          : null,
       floatingActionButton: _flowType == FlowType.posts
           ? FloatingActionButton(
               onPressed: () {
@@ -139,8 +150,7 @@ class FlowChunkState extends State<FlowChunk> {
       child: ListView.builder(
           physics: ClampingScrollPhysics(),
           controller: _scrollBottomBarController,
-          padding: EdgeInsets.only(
-              top: 16.0 + MediaQuery.of(context).padding.top, bottom: 16.0),
+          padding: EdgeInsets.only(top: 16.0, bottom: 16.0),
           itemCount: _hasMore ? _postsList.length + 1 : _postsList.length,
           itemBuilder: (BuildContext context, int index) {
             if (index >= _postsList.length - 10 &&
@@ -166,6 +176,26 @@ class FlowChunkState extends State<FlowChunk> {
             }
             return PostWidget(_postsList[index]);
           }),
+    );
+  }
+
+  Widget buildSearch() {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          vertical: 16.0 + MediaQuery.of(context).padding.top,
+          horizontal: 16.0),
+      child: TextField(
+//                controller: _searchQuery,
+        style: new TextStyle(
+          color: Colors.white,
+        ),
+        autofocus: false,
+        decoration: new InputDecoration(
+            prefixIcon: new Icon(Icons.search, color: Colors.white),
+            hintText: "Search...",
+            border: InputBorder.none,
+            hintStyle: new TextStyle(color: Colors.white)),
+      ),
     );
   }
 }
