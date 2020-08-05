@@ -3,6 +3,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../config.dart';
+import '../utils.dart';
 
 class SettingsWidget extends StatefulWidget {
   final Function refreshHome;
@@ -25,10 +26,12 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   @override
   void initState() {
     super.initState();
-//    setState(() async {
-//      _hasPkuToken = isValidToken(await HoleType.p.getToken());
-//      _hasThuToken = isValidToken(await HoleType.t.getToken());
-//    });
+    updateTokenStatus().then((value) => {setState(() {})});
+  }
+
+  Future<void> updateTokenStatus() async {
+    _hasPkuToken = isValidToken(await HoleType.p.getToken());
+    _hasThuToken = isValidToken(await HoleType.t.getToken());
   }
 
   @override
@@ -255,7 +258,7 @@ class _TokenFormState extends State<TokenForm> {
                   width: 320.0,
                   child: RaisedButton(
                     onPressed: () {
-                      _saveThuToken(type, textController.text);
+                      _saveToken(type, textController.text);
                       Navigator.pop(context);
                     },
                     child: Text(
@@ -274,7 +277,7 @@ class _TokenFormState extends State<TokenForm> {
   }
 }
 
-_saveThuToken(HoleType type, String token) async {
+_saveToken(HoleType type, String token) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setString(type == HoleType.t ? 'thuToken' : 'pkuToken', token);
 }

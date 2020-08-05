@@ -128,7 +128,7 @@ class PostWidget extends StatelessWidget {
                                   fadeInDuration:
                                       const Duration(milliseconds: 300),
                                   placeholder: kTransparentImage,
-                                  image: THUHOLE_IMAGE_BASE +
+                                  image: getImageBase(postInfo["holeType"]) +
                                       postInfo["url"].toString(),
                                 ),
                               ),
