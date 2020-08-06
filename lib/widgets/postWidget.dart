@@ -73,11 +73,12 @@ class PostWidget extends StatelessWidget {
                           postInfo["tag"] != null && postInfo["tag"] != '折叠'
                               ? Padding(
                                   padding: const EdgeInsets.only(right: 8),
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(4.0),
+                                  child: Card(
+                                      margin: EdgeInsets.all(0.0),
+                                      elevation: 8.0,
                                       clipBehavior: Clip.antiAliasWithSaveLayer,
                                       child: Container(
-                                          color: secondaryColor,
+                                          color: backgroundColor,
                                           child: Padding(
                                             padding: const EdgeInsets.all(2.0),
                                             child: Text(postInfo["tag"]),

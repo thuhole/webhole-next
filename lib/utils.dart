@@ -23,7 +23,7 @@ String getDateDiff(int diffValue) {
   String result;
 
   if (diffValue < 0) {
-    return ("错误时间");
+    return ("");
   }
   if (diffMonth > 1) {
     result = (diffMonth).toString() + "月前";
