@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
+import 'package:url_launcher/url_launcher.dart';
+
+import '../utils.dart';
 
 Widget getMarkdown(BuildContext context, bool selectable, String text) {
   MarkdownStyleSheet defaultStyle = MarkdownStyleSheet();
   return MarkdownBody(
     selectable: selectable,
     data: text,
+    onTapLink: _launchURL,
     styleSheet: MarkdownStyleSheet(
       h1: defaultStyle.h3,
       h2: defaultStyle.h3,
@@ -28,5 +32,13 @@ class MyLineBreakSyntax extends md.InlineSyntax {
   bool onMatch(md.InlineParser parser, Match match) {
     parser.addNode(md.Element.empty('br'));
     return true;
+  }
+}
+
+void _launchURL(String url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    showErrorToast('Failed to open $url');
   }
 }

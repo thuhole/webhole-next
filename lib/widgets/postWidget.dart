@@ -21,7 +21,7 @@ class PostWidget extends StatelessWidget {
       idText = "#" + postInfo["cid"].toString();
     }
     return Hero(
-      tag: type + idText,
+      tag: HoleTypeExtension(postInfo["holeType"]).name() + type + idText,
       child: Material(
         // Use material to make Hero take effect.
         color: backgroundColor,

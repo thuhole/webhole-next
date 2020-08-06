@@ -11,7 +11,7 @@ const PKUHOLE_IMAGE_BASE =
 enum HoleType { p, t }
 
 extension HoleTypeExtension on HoleType {
-  String getStr() {
+  String name() {
     return this == HoleType.p ? "pkuhole" : "thuhole";
   }
 

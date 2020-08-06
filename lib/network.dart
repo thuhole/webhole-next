@@ -12,11 +12,68 @@ abstract class HoleFetcher {
   Future<List<dynamic>> fetch();
 }
 
-abstract class OneHoleFetcher extends HoleFetcher {
+abstract class OneTypeHoleFetcher extends HoleFetcher {
   HoleType getType();
 }
 
-class PostsFetcher extends OneHoleFetcher {
+class SearchPostsFetcher extends OneTypeHoleFetcher {
+  dynamic lastData;
+  String keywords;
+  int page = 1;
+  HoleType type;
+
+  SearchPostsFetcher(this.type, this.keywords);
+
+  HoleType getType() {
+    return this.type;
+  }
+
+  void reset() {
+    page = 1;
+  }
+
+  Future<List<dynamic>> fetch() async {
+    String token = await type.getToken();
+    if (!isValidToken(token)) {
+      throw Exception(type.name() + "尚未登录");
+    }
+    print("fetch search page " + page.toString());
+    final resp = await http.get(
+        type.getApiBase() +
+            "/api.php?action=search&pagesize=50&PKUHelperAPI=3.0&keywords=" +
+            keywords +
+            "&page=" +
+            page.toString() +
+            tokenParams(token),
+        headers: {});
+    if (resp.statusCode == 200) {
+      dynamic j = json.decode(resp.body);
+      if (j["code"] != 0) {
+        throw Exception(type.name() + j["msg"]);
+      }
+      List<dynamic> data = j["data"];
+
+      List<dynamic> rtn = [];
+      for (dynamic item in data) {
+        item["timestamp"] = int.parse(item["timestamp"].toString());
+        item["pid"] = int.parse(item["pid"].toString());
+        item["reply"] = int.parse(item["reply"].toString());
+        item["likenum"] = int.parse(item["likenum"].toString());
+        if (page == 1 || lastData["timestamp"] > item["timestamp"]) {
+          item["holeType"] = type;
+          rtn.add(item);
+        }
+      }
+      if (data.length > 0) lastData = data[data.length - 1];
+      page += 1;
+      return rtn;
+    } else {
+      throw Exception(type.name() + 'HTTP异常代码' + resp.statusCode.toString());
+    }
+  }
+}
+
+class PostsFetcher extends OneTypeHoleFetcher {
   dynamic lastData;
   int page = 1;
   HoleType type;
@@ -34,19 +91,19 @@ class PostsFetcher extends OneHoleFetcher {
   Future<List<dynamic>> fetch() async {
     String token = await type.getToken();
     if (!isValidToken(token)) {
-      throw Exception(type.getStr() + "尚未登录");
+      throw Exception(type.name() + "尚未登录");
     }
     print("fetch page " + page.toString());
     final resp = await http.get(
         type.getApiBase() +
             "/api.php?action=getlist&PKUHelperAPI=3.0&p=" +
             page.toString() +
-            await tokenParams(token),
+            tokenParams(token),
         headers: {});
     if (resp.statusCode == 200) {
       dynamic j = json.decode(resp.body);
       if (j["code"] != 0) {
-        throw Exception(type.getStr() + j["msg"]);
+        throw Exception(type.name() + j["msg"]);
       }
       List<dynamic> data = j["data"];
 
@@ -61,16 +118,65 @@ class PostsFetcher extends OneHoleFetcher {
           rtn.add(item);
         }
       }
-      lastData = data[data.length - 1];
+      if (data.length > 0) lastData = data[data.length - 1];
       page += 1;
       return rtn;
     } else {
-      throw Exception(type.getStr() + 'HTTP异常代码' + resp.statusCode.toString());
+      throw Exception(type.name() + 'HTTP异常代码' + resp.statusCode.toString());
     }
   }
 }
 
-class AttentionFetcher extends OneHoleFetcher {
+class OneHoleFetcher extends OneTypeHoleFetcher {
+  HoleType type;
+  int page = 1;
+  String pid;
+
+  OneHoleFetcher(this.type, this.pid);
+
+  HoleType getType() {
+    return this.type;
+  }
+
+  void reset() {
+    page = 1;
+  }
+
+  Future<List<dynamic>> fetch() async {
+    String token = await type.getToken();
+    if (!isValidToken(token)) {
+      throw Exception(type.name() + "尚未登录");
+    }
+    if (page != 1) {
+      return [];
+    }
+    final resp = await http.get(
+        type.getApiBase() +
+            "/api.php?action=getone&pid=" +
+            pid +
+            "&PKUHelperAPI=3.0" +
+            tokenParams(token),
+        headers: {});
+    if (resp.statusCode == 200) {
+      dynamic j = json.decode(resp.body);
+      if (j["code"] != 0) {
+        throw Exception(type.name() + j["msg"]);
+      }
+      dynamic item = j["data"];
+      item["timestamp"] = int.parse(item["timestamp"].toString());
+      item["pid"] = int.parse(item["pid"].toString());
+      item["reply"] = int.parse(item["reply"].toString());
+      item["likenum"] = int.parse(item["likenum"].toString());
+      item["holeType"] = type;
+      page += 1;
+      return [item];
+    } else {
+      throw Exception(type.name() + 'HTTP异常代码' + resp.statusCode.toString());
+    }
+  }
+}
+
+class AttentionFetcher extends OneTypeHoleFetcher {
   int page = 1;
   HoleType type;
 
@@ -87,7 +193,7 @@ class AttentionFetcher extends OneHoleFetcher {
   Future<List<dynamic>> fetch() async {
     String token = await type.getToken();
     if (!isValidToken(token)) {
-      throw Exception(type.getStr() + "尚未登录");
+      throw Exception(type.name() + "尚未登录");
     }
     if (page != 1) {
       return [];
@@ -95,12 +201,12 @@ class AttentionFetcher extends OneHoleFetcher {
     final resp = await http.get(
         type.getApiBase() +
             "/api.php?action=getattention&PKUHelperAPI=3.0" +
-            await tokenParams(token),
+            tokenParams(token),
         headers: {});
     if (resp.statusCode == 200) {
       dynamic j = json.decode(resp.body);
       if (j["code"] != 0) {
-        throw Exception(type.getStr() + j["msg"]);
+        throw Exception(type.name() + j["msg"]);
       }
       page += 1;
       List<dynamic> data = j["data"];
@@ -115,13 +221,13 @@ class AttentionFetcher extends OneHoleFetcher {
       }
       return rtn;
     } else {
-      throw Exception(type.getStr() + 'HTTP异常代码' + resp.statusCode.toString());
+      throw Exception(type.name() + 'HTTP异常代码' + resp.statusCode.toString());
     }
   }
 }
 
 class MergedHoleFetcher extends HoleFetcher {
-  List<OneHoleFetcher> fetchers;
+  List<OneTypeHoleFetcher> fetchers;
   List<bool> enabled;
   List<List<dynamic>> fetchersResults;
   List<int> fetcherTimestamps;
@@ -130,7 +236,7 @@ class MergedHoleFetcher extends HoleFetcher {
 
   bool resetting = false;
 
-  MergedHoleFetcher(List<OneHoleFetcher> fetchers) {
+  MergedHoleFetcher(List<OneTypeHoleFetcher> fetchers) {
     if (fetchers.length == 0) {
       throw Exception("No fetcher!");
     }
@@ -182,7 +288,12 @@ class MergedHoleFetcher extends HoleFetcher {
   }
 
   Future<void> _updateFetcher(int index) async {
-    List<dynamic> results = await fetchers[index].fetch();
+    List<dynamic> results = [];
+    try {
+      results = await fetchers[index].fetch();
+    } catch (e) {
+      showErrorToast(e.toString());
+    }
     fetchersResults[index].addAll(results);
     fetcherTimestamps[index] =
         results.length > 0 ? results[results.length - 1]["timestamp"] : -1;
@@ -191,7 +302,7 @@ class MergedHoleFetcher extends HoleFetcher {
   Future<void> reset() async {
     if (this.resetting == true) return;
     resetting = true;
-    for (OneHoleFetcher fetcher in fetchers) {
+    for (OneTypeHoleFetcher fetcher in fetchers) {
       fetcher.reset();
     }
     this.length = fetchers.length;
@@ -219,18 +330,18 @@ class CommentFetcher {
   Future<List<dynamic>> fetch(int pid) async {
     String token = await type.getToken();
     if (!isValidToken(token)) {
-      throw Exception(type.getStr() + "尚未登录");
+      throw Exception(type.name() + "尚未登录");
     }
     final resp = await http.get(
         type.getApiBase() +
             "/api.php?action=getcomment&PKUHelperAPI=3.0&pid=" +
             pid.toString() +
-            await tokenParams(token),
+            tokenParams(token),
         headers: {});
     if (resp.statusCode == 200) {
       dynamic j = json.decode(resp.body);
       if (j["code"] != 0) {
-        throw Exception(type.getStr() + j["msg"]);
+        throw Exception(type.name() + j["msg"]);
       }
       List<dynamic> data = j["data"];
       List<dynamic> rtn = [];
@@ -247,7 +358,7 @@ class CommentFetcher {
       rtn.sort((a, b) => a["timestamp"] - b["timestamp"]);
       return rtn;
     } else {
-      throw Exception(type.getStr() + 'HTTP异常代码' + resp.statusCode.toString());
+      throw Exception(type.name() + 'HTTP异常代码' + resp.statusCode.toString());
     }
   }
 }

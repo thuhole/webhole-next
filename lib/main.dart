@@ -96,6 +96,7 @@ class _HomeWidgetState extends State<HomeWidget> {
           });
           if (_delta == 0 || _delta == _containerMaxHeight)
             _keyPosts.currentState.setShowAppbar(_delta == 0);
+          if (_delta == _containerMaxHeight) FocusScope.of(context).unfocus();
         }
         _oldDelta = _delta;
       });
@@ -113,6 +114,7 @@ class _HomeWidgetState extends State<HomeWidget> {
           });
           if (_delta == 0 || _delta == _containerMaxHeight)
             _keyAttention.currentState.setShowAppbar(_delta == 0);
+          if (_delta == _containerMaxHeight) FocusScope.of(context).unfocus();
         }
         _oldDelta = _delta;
       });
@@ -138,8 +140,10 @@ class _HomeWidgetState extends State<HomeWidget> {
           alignment: Alignment.bottomCenter,
           children: <Widget>[
             Container(
-              padding:
-                  EdgeInsets.only(bottom: _containerMaxHeight + this._offset),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom == 0
+                      ? _containerMaxHeight + this._offset
+                      : 0),
               child: PageView(
                   controller: _c,
                   onPageChanged: (newPage) {

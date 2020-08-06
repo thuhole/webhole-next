@@ -14,8 +14,8 @@ class FlowChunk extends StatefulWidget {
       : super(key: key);
 
   @override
-  FlowChunkState createState() => FlowChunkState.defaultFetcher(
-      this._scrollBottomBarController, this._flowType);
+  FlowChunkState createState() =>
+      FlowChunkState(this._scrollBottomBarController, this._flowType);
 }
 
 class FlowChunkState extends State<FlowChunk> {
@@ -33,20 +33,18 @@ class FlowChunkState extends State<FlowChunk> {
   bool _showAppBar = true;
   String errorMsg;
 
-  FlowChunkState(
-      this._scrollBottomBarController, this._flowType, this._itemFetcher);
+  TextEditingController _searchQueryController = TextEditingController();
+  bool _isSearching = false;
 
-  FlowChunkState.defaultFetcher(_scrollBottomBarController, _flowType)
-      : this(
-            _scrollBottomBarController,
-            _flowType,
-            _flowType == FlowType.posts
-                ? MergedHoleFetcher(
-                    [PostsFetcher(HoleType.t), PostsFetcher(HoleType.p)])
-                : MergedHoleFetcher([
-                    AttentionFetcher(HoleType.t),
-                    AttentionFetcher(HoleType.p)
-                  ]));
+  FlowChunkState(this._scrollBottomBarController, this._flowType);
+
+  static MergedHoleFetcher getMergedFetcher(FlowType _flowType) {
+    return _flowType == FlowType.posts
+        ? MergedHoleFetcher(
+            [PostsFetcher(HoleType.t), PostsFetcher(HoleType.p)])
+        : MergedHoleFetcher(
+            [AttentionFetcher(HoleType.t), AttentionFetcher(HoleType.p)]);
+  }
 
   @override
   void dispose() {
@@ -56,21 +54,23 @@ class FlowChunkState extends State<FlowChunk> {
 
   @override
   void initState() {
+    _itemFetcher = getMergedFetcher(_flowType);
     super.initState();
     _isLoading = true;
     _hasMore = true;
-    _itemFetcher.reset();
     _loadMore();
   }
 
   Future<void> refresh() async {
     setState(() {
+      _itemFetcher = getMergedFetcher(_flowType);
+      _searchQueryController.clear();
+      _isSearching = false;
       _isLoading = true;
       _hasMore = true;
       _onError = false;
       _showAppBar = true;
       _postsList = [];
-      _itemFetcher.reset();
       _loadMore();
     });
   }
@@ -121,6 +121,17 @@ class FlowChunkState extends State<FlowChunk> {
           ? AppBar(
               backgroundColor: primaryColor,
               title: buildSearch(),
+              actions: _isSearching
+                  ? [
+                      IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          refresh();
+                        },
+                      ),
+                    ]
+                  : null,
             )
           : null,
       floatingActionButton: _flowType == FlowType.posts
@@ -185,11 +196,44 @@ class FlowChunkState extends State<FlowChunk> {
           vertical: 16.0 + MediaQuery.of(context).padding.top,
           horizontal: 16.0),
       child: TextField(
-//                controller: _searchQuery,
+        controller: _searchQueryController,
         style: new TextStyle(
           color: Colors.white,
         ),
         autofocus: false,
+        onChanged: (query) => {
+          setState(() {
+            _isSearching = _searchQueryController.text.isNotEmpty;
+          })
+        },
+        onSubmitted: (str) {
+          if (str.length == 0) {
+            refresh();
+          } else if (str.startsWith("#")) {
+            String pidString = str.substring(1);
+            _itemFetcher = _itemFetcher = MergedHoleFetcher([
+              OneHoleFetcher(HoleType.t, pidString),
+              OneHoleFetcher(HoleType.p, pidString)
+            ]);
+            _isLoading = true;
+            _hasMore = true;
+            _onError = false;
+            _postsList = [];
+            _loadMore();
+          } else {
+            setState(() {
+              _itemFetcher = _itemFetcher = MergedHoleFetcher([
+                SearchPostsFetcher(HoleType.t, str),
+                SearchPostsFetcher(HoleType.p, str)
+              ]);
+              _isLoading = true;
+              _hasMore = true;
+              _onError = false;
+              _postsList = [];
+              _loadMore();
+            });
+          }
+        },
         decoration: new InputDecoration(
             prefixIcon: new Icon(Icons.search, color: Colors.white),
             hintText: "Search...",
