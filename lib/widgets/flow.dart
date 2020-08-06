@@ -84,7 +84,11 @@ class FlowChunkState extends State<FlowChunk> {
   void _loadMore() {
     if (_isLoading) return;
     _isLoading = true;
+    String oldSearchParams = _searchQueryController.text;
     _itemFetcher.fetch().then((List<dynamic> fetchedList) {
+      if (oldSearchParams != _searchQueryController.text) return;
+// Do not update if the search keywords have changes.
+
       if (fetchedList.isEmpty) {
         setState(() {
           _isLoading = false;
