@@ -12,7 +12,7 @@ enum HoleType { p, t }
 
 extension HoleTypeExtension on HoleType {
   String getStr() {
-    return this == HoleType.p ? "pku" : "thu";
+    return this == HoleType.p ? "pkuhole" : "thuhole";
   }
 
   String getApiBase() {
