@@ -63073,7 +63073,8 @@ if(J.rN(a,"#")){r=C.c.bH(a,1)
 q=new S.p7()
 q.qC(H.a([new S.pi(C.bP,r),new S.pi(C.ai,r)],t.Ah))
 s.f=q
-s.y=s.x=!0
+s.x=!1
+s.y=!0
 s.z=!1
 s.d=[]
 s.oe()}else s.a3(new N.SF(s,a))}},
@@ -63082,7 +63083,8 @@ N.SF.prototype={
 $0:function(){var s=this.a,r=this.b,q=new S.p7()
 q.qC(H.a([new S.wE(r,C.bP),new S.wE(r,C.ai)],t.Ah))
 s.f=q
-s.y=s.x=!0
+s.x=!1
+s.y=!0
 s.z=!1
 s.d=[]
 s.oe()},
@@ -63107,8 +63109,8 @@ return P.H($async$eA,r)},
 wE:function(){var s=this
 if(s.r)return
 s.r=!0
-if(H.L(s.f.a)===C.PO)s.e=t.cr.a(s.f.a).a4e()
-s.f.bh(0).bl(0,new O.Ud(s),t.P).ho(new O.Ue(s))},
+if(H.L(s.f.a)===C.PO&&s.e.length===0){s.e=t.cr.a(s.f.a).a4e()
+s.f.d=2}s.f.bh(0).bl(0,new O.Ud(s),t.P).ho(new O.Ue(s))},
 F:function(a,b){var s,r,q,p,o,n,m=this,l=null
 P.c1("hole_detail build")
 s=$.hR
@@ -63189,7 +63191,7 @@ $1:function(a){return a.b.a==="/"},
 $S:136}
 O.U9.prototype={
 $2:function(a,b){var s,r,q=null,p=this.a
-if(b>=p.e.length-10&&!p.y&&!p.r&&p.x)p.wE()
+if(!p.y&&!p.r&&p.x)p.wE()
 s=p.e
 r=s.length
 if(b>=r){if(p.y)return T.dW(L.bP(C.c.J("Error: ",p.ch),q,q,q,q,q),q,q)
