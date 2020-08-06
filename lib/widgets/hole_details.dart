@@ -19,7 +19,7 @@ class HoleDetails extends StatefulWidget {
 class HoleDetailsState extends State<HoleDetails> {
   dynamic info;
   List<dynamic> _postsList = [];
-  OneTypeHoleFetcher _itemFetcher;
+  TwoPageFetcher _itemFetcher;
 
   HoleDetailsState(this.info);
 
@@ -60,6 +60,9 @@ class HoleDetailsState extends State<HoleDetails> {
   void _loadMore() {
     if (_isLoading) return;
     _isLoading = true;
+    if (_itemFetcher.fetcher1.runtimeType == SavedHoleFetcher) {
+      _postsList = (_itemFetcher.fetcher1 as SavedHoleFetcher).fetchNow();
+    }
     _itemFetcher.fetch().then((List<dynamic> fetchedList) {
       if (fetchedList.isEmpty) {
         setState(() {
