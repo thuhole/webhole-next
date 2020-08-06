@@ -2,9 +2,10 @@ os: linux
 dist: bionic
 
 before_script:
-  # use master branch here to keep up with latest flutter web sdk,
+  # use master branch to keep up with latest flutter web sdk,
   # hope this would lead to better performance
-  - if cd flutter; then git pull && cd .. ; else git clone https://github.com/flutter/flutter.git -b master; fi
+  #  - if cd flutter; then git pull && cd .. ; else git clone https://github.com/flutter/flutter.git -b master; fi
+  - if cd flutter; then git pull && cd .. ; else git clone https://github.com/flutter/flutter.git -b beta; fi
   - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
   #  - flutter doctor -v
   - flutter clean
