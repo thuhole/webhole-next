@@ -60,8 +60,10 @@ class HoleDetailsState extends State<HoleDetails> {
   void _loadMore() {
     if (_isLoading) return;
     _isLoading = true;
-    if (_itemFetcher.fetcher1.runtimeType == SavedHoleFetcher) {
+    if (_itemFetcher.fetcher1.runtimeType == SavedHoleFetcher &&
+        _postsList.length == 0) {
       _postsList = (_itemFetcher.fetcher1 as SavedHoleFetcher).fetchNow();
+      _itemFetcher.page = 2;
     }
     _itemFetcher.fetch().then((List<dynamic> fetchedList) {
       if (fetchedList.isEmpty) {
@@ -198,10 +200,7 @@ class HoleDetailsState extends State<HoleDetails> {
                 top: 16.0 + MediaQuery.of(context).padding.top, bottom: 60.0),
             itemCount: _hasMore ? _postsList.length + 1 : _postsList.length,
             itemBuilder: (BuildContext context, int index) {
-              if (index >= _postsList.length - 10 &&
-                  !_onError &&
-                  !_isLoading &&
-                  _hasMore) {
+              if (!_onError && !_isLoading && _hasMore) {
                 // preload
                 _loadMore();
               }

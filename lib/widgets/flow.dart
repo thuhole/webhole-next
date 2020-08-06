@@ -216,7 +216,7 @@ class FlowChunkState extends State<FlowChunk> {
               OneHoleFetcher(HoleType.t, pidString),
               OneHoleFetcher(HoleType.p, pidString)
             ]);
-            _isLoading = true;
+            _isLoading = false;
             _hasMore = true;
             _onError = false;
             _postsList = [];
@@ -227,7 +227,7 @@ class FlowChunkState extends State<FlowChunk> {
                 SearchPostsFetcher(HoleType.t, str),
                 SearchPostsFetcher(HoleType.p, str)
               ]);
-              _isLoading = true;
+              _isLoading = false;
               _hasMore = true;
               _onError = false;
               _postsList = [];
