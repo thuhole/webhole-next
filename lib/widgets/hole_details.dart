@@ -48,6 +48,10 @@ class HoleDetailsState extends State<HoleDetails> {
   }
 
   Future<void> refresh() async {
+    _itemFetcher = TwoPageFetcher(
+        this.info["holeType"],
+        OneHoleFetcher(this.info["holeType"], this.info["pid"].toString()),
+        CommentFetcher(this.info["holeType"], this.info["pid"]));
     setState(() {
       _onError = false;
       _hasMore = true;
@@ -142,14 +146,7 @@ class HoleDetailsState extends State<HoleDetails> {
             backgroundColor: secondaryColor,
             label: '刷新',
 //            labelStyle: TextStyle(fontSize: 18.0),
-            onTap: () {
-              _itemFetcher = TwoPageFetcher(
-                  this.info["holeType"],
-                  OneHoleFetcher(
-                      this.info["holeType"], this.info["pid"].toString()),
-                  CommentFetcher(this.info["holeType"], this.info["pid"]));
-              refresh();
-            },
+            onTap: refresh,
           ),
         ],
       ),

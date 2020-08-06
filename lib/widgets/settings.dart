@@ -59,7 +59,12 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                     context: context,
                     builder: (w) {
                       return TokenForm(
-                        type: HoleType.t,
+                        callback: (token) async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          await prefs.setString('thuToken', token);
+                          showInfoToast("已保存token:" + token);
+                        },
                       );
                     });
               },
@@ -76,7 +81,12 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                     context: context,
                     builder: (w) {
                       return TokenForm(
-                        type: HoleType.p,
+                        callback: (token) async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          await prefs.setString('pkuToken', token);
+                          showInfoToast("已保存token:" + token);
+                        },
                       );
                     });
               },
@@ -211,12 +221,12 @@ class _SettingsWidgetState extends State<SettingsWidget> {
 }
 
 class TokenForm extends StatefulWidget {
-  final HoleType type;
+  final void Function(String) callback;
 
-  TokenForm({Key key, this.type: HoleType.t}): super(key: key);
+  TokenForm({Key key, this.callback}) : super(key: key);
 
   @override
-  _TokenFormState createState() => _TokenFormState(type);
+  _TokenFormState createState() => _TokenFormState(callback);
 }
 
 // Define a corresponding State class.
@@ -225,9 +235,9 @@ class _TokenFormState extends State<TokenForm> {
   // Create a text controller and use it to retrieve the current value
   // of the TextField.
   final textController = TextEditingController();
-  final HoleType type;
+  final void Function(String) callback;
 
-  _TokenFormState(this.type);
+  _TokenFormState(this.callback);
 
   @override
   void dispose() {
@@ -263,8 +273,9 @@ class _TokenFormState extends State<TokenForm> {
                   width: 320.0,
                   child: RaisedButton(
                     onPressed: () {
-                      _saveToken(type, textController.text);
+//                      _saveToken(type, textController.text);
                       Navigator.pop(context);
+                      callback(textController.text);
                     },
                     child: Text(
                       "Save",
@@ -280,9 +291,4 @@ class _TokenFormState extends State<TokenForm> {
       ),
     );
   }
-}
-
-_saveToken(HoleType type, String token) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setString(type == HoleType.t ? 'thuToken' : 'pkuToken', token);
 }
