@@ -26,7 +26,7 @@ class FlowChunkState extends State<FlowChunk> {
   MergedHoleFetcher _itemFetcher;
   final FlowType _flowType;
 
-  bool _isLoading = true;
+  bool _isLoading = false;
   bool _hasMore = true;
   bool _onError = false;
   bool _disposed = false;
@@ -66,7 +66,6 @@ class FlowChunkState extends State<FlowChunk> {
       _itemFetcher = getMergedFetcher(_flowType);
       _searchQueryController.clear();
       _isSearching = false;
-      _isLoading = true;
       _hasMore = true;
       _onError = false;
       _showAppBar = true;
@@ -82,6 +81,7 @@ class FlowChunkState extends State<FlowChunk> {
   }
 
   void _loadMore() {
+    if (_isLoading) return;
     _isLoading = true;
     _itemFetcher.fetch().then((List<dynamic> fetchedList) {
       if (fetchedList.isEmpty) {

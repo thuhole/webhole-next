@@ -9,13 +9,13 @@ import '../utils.dart';
 class PostWidget extends StatelessWidget {
   final dynamic postInfo;
   final bool isDetailMode;
-  final String type;
 
-  PostWidget(this.postInfo, {this.type: "pid", this.isDetailMode: false});
+  PostWidget(this.postInfo, {this.isDetailMode: false});
 
   @override
   Widget build(BuildContext context) {
     String idText = "#" + postInfo["pid"].toString();
+    String type = postInfo["cid"] == null ? "pid" : "cid";
     if (type == "cid") {
       // is comment
       idText = "#" + postInfo["cid"].toString();

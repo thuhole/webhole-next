@@ -16,6 +16,30 @@ abstract class OneTypeHoleFetcher extends HoleFetcher {
   HoleType getType();
 }
 
+class SavedHoleFetcher extends OneTypeHoleFetcher {
+  HoleType type;
+  int page = 1;
+  List<dynamic> data;
+
+  SavedHoleFetcher(this.type, this.data);
+
+  HoleType getType() {
+    return this.type;
+  }
+
+  void reset() {
+    page = 1;
+  }
+
+  Future<List<dynamic>> fetch() async {
+    if (page != 1) {
+      return [];
+    }
+    page += 1;
+    return this.data;
+  }
+}
+
 class SearchPostsFetcher extends OneTypeHoleFetcher {
   dynamic lastData;
   String keywords;
@@ -164,10 +188,13 @@ class OneHoleFetcher extends OneTypeHoleFetcher {
       }
       dynamic item = j["data"];
       item["timestamp"] = int.parse(item["timestamp"].toString());
-      item["pid"] = int.parse(item["pid"].toString());
+      item["pid"] = int.parse(this.pid);
       item["reply"] = int.parse(item["reply"].toString());
       item["likenum"] = int.parse(item["likenum"].toString());
       item["holeType"] = type;
+      item["color"] = await validTokenCount() == 1
+          ? primaryColor
+          : getHoleTypeColor(item["holeType"]);
       page += 1;
       return [item];
     } else {
@@ -322,15 +349,20 @@ class MergedHoleFetcher extends HoleFetcher {
   }
 }
 
-class CommentFetcher {
+class CommentFetcher extends OneTypeHoleFetcher {
   HoleType type;
+  int page = 1;
+  int pid;
 
-  CommentFetcher(this.type);
+  CommentFetcher(this.type, this.pid);
 
-  Future<List<dynamic>> fetch(int pid) async {
+  Future<List<dynamic>> fetch() async {
     String token = await type.getToken();
     if (!isValidToken(token)) {
       throw Exception(type.name() + "尚未登录");
+    }
+    if (page != 1) {
+      return [];
     }
     final resp = await http.get(
         type.getApiBase() +
@@ -356,9 +388,49 @@ class CommentFetcher {
         rtn.add(item);
       }
       rtn.sort((a, b) => a["timestamp"] - b["timestamp"]);
+      page += 1;
       return rtn;
     } else {
       throw Exception(type.name() + 'HTTP异常代码' + resp.statusCode.toString());
     }
+  }
+
+  HoleType getType() {
+    return this.getType();
+  }
+
+  void reset() {
+    page = 1;
+  }
+}
+
+class TwoPageFetcher extends OneTypeHoleFetcher {
+  final OneTypeHoleFetcher fetcher1, fetcher2;
+  final HoleType type;
+  int page = 1;
+
+  TwoPageFetcher(this.type, this.fetcher1, this.fetcher2);
+
+  Future<List> fetch() async {
+    List rtn = [];
+    if (page == 1) {
+      rtn = await fetcher1.fetch();
+      page += 1;
+      return rtn;
+    } else if (page == 2) {
+      rtn = await fetcher2.fetch();
+      page += 1;
+      return rtn;
+    } else {
+      return rtn;
+    }
+  }
+
+  HoleType getType() {
+    return this.type;
+  }
+
+  void reset() {
+    page = 1;
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:webhole/config.dart';
 
 String tokenParams(String token) {
   return '&user_token=' + token;
@@ -49,4 +50,13 @@ void showErrorToast(String s) {
       backgroundColor: Colors.red,
       textColor: Colors.white,
       fontSize: 16.0);
+}
+
+Future<int> validTokenCount() async {
+  int rtn = 0;
+  for (HoleType i in [HoleType.p, HoleType.t]) {
+    String token = await i.getToken();
+    if (isValidToken(token)) rtn += 1;
+  }
+  return rtn;
 }

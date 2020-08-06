@@ -2,6 +2,7 @@ import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:webhole/network.dart';
+import 'package:webhole/utils.dart';
 
 import '../config.dart';
 import 'postWidget.dart';
@@ -12,20 +13,21 @@ class HoleDetails extends StatefulWidget {
   HoleDetails({Key key, this.info}) : super(key: key);
 
   @override
-  HoleDetailsState createState() =>
-      HoleDetailsState(this.info, CommentFetcher(this.info["holeType"]));
+  HoleDetailsState createState() => HoleDetailsState(this.info);
 }
 
 class HoleDetailsState extends State<HoleDetails> {
   dynamic info;
-  List<dynamic> _comments = [];
-  final CommentFetcher _itemFetcher;
+  List<dynamic> _postsList = [];
+  OneTypeHoleFetcher _itemFetcher;
 
-  HoleDetailsState(this.info, this._itemFetcher);
+  HoleDetailsState(this.info);
 
-  bool _isLoading = true;
+  bool _isLoading = false;
+  bool _hasMore = true;
   bool _onError = false;
   bool _disposed = false;
+  bool _reversed = false;
   String errorMsg;
 
   @override
@@ -37,29 +39,36 @@ class HoleDetailsState extends State<HoleDetails> {
   @override
   void initState() {
     super.initState();
-    _isLoading = true;
-    load();
+//    _itemFetcher = CommentFetcher(this.info["holeType"], this.info["pid"]);
+    _itemFetcher = TwoPageFetcher(
+        this.info["holeType"],
+        SavedHoleFetcher(this.info["holeType"], [this.info]),
+        CommentFetcher(this.info["holeType"], this.info["pid"]));
+    _loadMore();
   }
 
   Future<void> refresh() async {
     setState(() {
-      _isLoading = true;
       _onError = false;
-      load();
+      _hasMore = true;
+      _postsList = [];
+      _loadMore();
     });
   }
 
-  void load() {
+  void _loadMore() {
+    if (_isLoading) return;
     _isLoading = true;
-    _itemFetcher.fetch(this.info["pid"]).then((List<dynamic> fetchedList) {
+    _itemFetcher.fetch().then((List<dynamic> fetchedList) {
       if (fetchedList.isEmpty) {
         setState(() {
           _isLoading = false;
+          _hasMore = false;
         });
       } else {
         setState(() {
           _isLoading = false;
-          _comments = fetchedList;
+          _postsList.addAll(fetchedList);
         });
       }
     }).catchError((e) {
@@ -76,7 +85,7 @@ class HoleDetailsState extends State<HoleDetails> {
 
   @override
   Widget build(BuildContext context) {
-    print("flow build");
+    print("hole_detail build");
     return Scaffold(
       floatingActionButton: SpeedDial(
         // both default to 16
@@ -93,34 +102,48 @@ class HoleDetailsState extends State<HoleDetails> {
 //        curve: Curves.bounceIn,
         overlayColor: Colors.white,
         overlayOpacity: 0.5,
-        onOpen: () => print('OPENING DIAL'),
-        onClose: () => print('DIAL CLOSED'),
-        tooltip: 'Speed Dial',
-        heroTag: 'speed-dial-hero-tag',
         backgroundColor: secondaryColor,
         foregroundColor: Colors.white,
         elevation: 4.0,
         shape: CircleBorder(),
         children: [
           SpeedDialChild(
-              child: Icon(Icons.report_problem),
+              child: const Icon(Icons.report_problem),
               backgroundColor: Colors.red,
               label: '举报',
 //              labelStyle: TextStyle(fontSize: 18.0),
-              onTap: () => print('FIRST CHILD')),
+              onTap: () => showErrorToast("Not implemented")),
           SpeedDialChild(
-            child: Icon(Icons.sort),
+            child: const Icon(Icons.sort),
             backgroundColor: secondaryColor,
-            label: '逆序',
+            label: _reversed ? '顺序' : '逆序',
 //            labelStyle: TextStyle(fontSize: 18.0),
-            onTap: () => print('SECOND CHILD'),
+            onTap: () => {
+              setState(() {
+                _reversed = !_reversed;
+              })
+            },
           ),
           SpeedDialChild(
-            child: Icon(Icons.refresh),
+            child: const Icon(Icons.content_copy),
+            backgroundColor: secondaryColor,
+            label: '复制全文',
+//            labelStyle: TextStyle(fontSize: 18.0),
+            onTap: () => showErrorToast("Not implemented"),
+          ),
+          SpeedDialChild(
+            child: const Icon(Icons.refresh),
             backgroundColor: secondaryColor,
             label: '刷新',
 //            labelStyle: TextStyle(fontSize: 18.0),
-            onTap: () => print('THIRD CHILD'),
+            onTap: () {
+              _itemFetcher = TwoPageFetcher(
+                  this.info["holeType"],
+                  OneHoleFetcher(
+                      this.info["holeType"], this.info["pid"].toString()),
+                  CommentFetcher(this.info["holeType"], this.info["pid"]));
+              refresh();
+            },
           ),
         ],
       ),
@@ -169,31 +192,31 @@ class HoleDetailsState extends State<HoleDetails> {
             physics: ClampingScrollPhysics(),
             padding: EdgeInsets.only(
                 top: 16.0 + MediaQuery.of(context).padding.top, bottom: 60.0),
-            itemCount: _isLoading ? _comments.length + 2 : _comments.length + 1,
+            itemCount: _hasMore ? _postsList.length + 1 : _postsList.length,
             itemBuilder: (BuildContext context, int index) {
-              if (index == 0) {
-                return PostWidget(
-                  info,
-                  isDetailMode: true,
-                );
+              if (index >= _postsList.length - 10 &&
+                  !_onError &&
+                  !_isLoading &&
+                  _hasMore) {
+                // preload
+                _loadMore();
               }
-              if (index >= _comments.length + 1) {
+              if (index >= _postsList.length) {
                 if (_onError) {
                   return Center(
                     child: Text("Error: " + errorMsg),
                   );
                 }
-                return const Center(
-                  child: const SizedBox(
-                    child: const CircularProgressIndicator(),
+                return Center(
+                  child: SizedBox(
+                    child: CircularProgressIndicator(),
                     height: 32,
                     width: 32,
                   ),
                 );
               }
               return PostWidget(
-                _comments[index - 1],
-                type: "cid",
+                _postsList[_reversed ? _postsList.length - 1 - index : index],
                 isDetailMode: true,
               );
             }),
