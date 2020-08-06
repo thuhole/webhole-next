@@ -58,28 +58,18 @@ class _EditorWidgetState extends State<EditorWidget>
     int height = image.width;
     compressed = false;
 
-    print("1");
-    print(height);
-    print(width);
-
     if (width > MAX_IMG_DIAM) {
       height = (height * MAX_IMG_DIAM) ~/ width;
       width = MAX_IMG_DIAM;
       compressed = true;
     }
 
-    print("2");
-    print(height);
-    print(width);
     if (height > MAX_IMG_DIAM) {
       width = (width * MAX_IMG_DIAM) ~/ height;
       height = MAX_IMG_DIAM;
       compressed = true;
     }
 
-    print("3");
-    print(height);
-    print(width);
     if (height * width > MAX_IMG_PX) {
       double rate = sqrt((height * width) / MAX_IMG_PX);
       height ~/= rate;
@@ -87,9 +77,6 @@ class _EditorWidgetState extends State<EditorWidget>
       compressed = true;
     }
 
-    print("4");
-    print(height);
-    print(width);
     if (compressed) image = im.copyResize(image, height: height, width: width);
 
     return im.encodeJpg(image);
@@ -170,7 +157,9 @@ class _EditorWidgetState extends State<EditorWidget>
                         maxLines: max((constraints.maxHeight - 240) ~/ 16, 5),
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          hintText: '请遵守相关树洞管理规范，文明发言。',
+                          hintText: '请遵守树洞管理规范' +
+                              (dropdownValue == 'T大树洞' ? '（试行）' : '') +
+                              '，文明发言。',
                         ),
                       ),
                     ),
