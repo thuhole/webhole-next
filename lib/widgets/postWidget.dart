@@ -68,6 +68,20 @@ class PostWidget extends StatelessWidget {
                                     postInfo["timestamp"])),
                           ),
                           Spacer(),
+                          postInfo["tag"] != null
+                              ? Padding(
+                                  padding: const EdgeInsets.only(right: 8),
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      child: Container(
+                                          color: secondaryColor,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(2.0),
+                                            child: Text(postInfo["tag"]),
+                                          ))),
+                                )
+                              : Container(),
                           postInfo["reply"] > 0
                               ? const Icon(
                                   Icons.comment,

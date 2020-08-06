@@ -52,6 +52,7 @@ class HoleDetailsState extends State<HoleDetails> {
       _onError = false;
       _hasMore = true;
       _postsList = [];
+      _isLoading = false;
       _loadMore();
     });
   }

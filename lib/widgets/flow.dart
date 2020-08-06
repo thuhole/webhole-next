@@ -69,6 +69,7 @@ class FlowChunkState extends State<FlowChunk> {
       _hasMore = true;
       _onError = false;
       _showAppBar = true;
+      _isLoading = false;
       _postsList = [];
       _loadMore();
     });
