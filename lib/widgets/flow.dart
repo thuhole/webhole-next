@@ -56,7 +56,7 @@ class FlowChunkState extends State<FlowChunk> {
   void initState() {
     _itemFetcher = getMergedFetcher(_flowType);
     super.initState();
-    _isLoading = true;
+    _isLoading = false;
     _hasMore = true;
     _loadMore();
   }

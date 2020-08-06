@@ -20,6 +20,8 @@ class PostWidget extends StatelessWidget {
       // is comment
       idText = "#" + postInfo["cid"].toString();
     }
+
+    bool needFold = FOLD_TAGS.indexOf(postInfo["tag"]) > -1 && !isDetailMode;
     return Hero(
       tag: HoleTypeExtension(postInfo["holeType"]).name() + type + idText,
       child: Material(
@@ -68,7 +70,7 @@ class PostWidget extends StatelessWidget {
                                     postInfo["timestamp"])),
                           ),
                           Spacer(),
-                          postInfo["tag"] != null
+                          postInfo["tag"] != null && postInfo["tag"] != '折叠'
                               ? Padding(
                                   padding: const EdgeInsets.only(right: 8),
                                   child: ClipRRect(
@@ -114,7 +116,7 @@ class PostWidget extends StatelessWidget {
                       thickness: 1,
                       height: 0,
                     ),
-                    postInfo["text"].toString().length > 0
+                    postInfo["text"].toString().length > 0 && !needFold
                         ? Container(
                             alignment: Alignment.centerLeft,
                             child: Padding(
@@ -124,7 +126,7 @@ class PostWidget extends StatelessWidget {
                                 child: getMarkdown(context, isDetailMode,
                                     postInfo["text"].toString())))
                         : Container(),
-                    postInfo["type"] == "image"
+                    postInfo["type"] == "image" && !needFold
                         ? Center(
                             child: CachedNetworkImage(
                               imageUrl: getImageBase(postInfo["holeType"]) +

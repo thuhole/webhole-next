@@ -38,6 +38,14 @@ class SavedHoleFetcher extends OneTypeHoleFetcher {
     page += 1;
     return this.data;
   }
+
+  List<dynamic> fetchNow() {
+    if (page != 1) {
+      return [];
+    }
+    page += 1;
+    return this.data;
+  }
 }
 
 class SearchPostsFetcher extends OneTypeHoleFetcher {
