@@ -110,10 +110,10 @@ class HoleDetailsState extends State<HoleDetails> {
         // by tapping main button and overlay is not rendered.
         closeManually: false,
 //        curve: Curves.bounceIn,
-        overlayColor: Colors.white,
-        overlayOpacity: 0.5,
+//        overlayColor: Colors.white,
+//        overlayOpacity: 0.5,
         backgroundColor: secondaryColor,
-        foregroundColor: Colors.white,
+//        foregroundColor: Colors.white,
         elevation: 4.0,
         shape: CircleBorder(),
         children: [

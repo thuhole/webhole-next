@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
 //          primaryColor: const Color(0xffFFC600),
         //main font
         fontFamily: 'Roboto-Medium',
+//        brightness: Brightness.dark,
 //          //swatch stretching
 //          primarySwatch: goldenThemeColor,
 //          visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -70,6 +71,7 @@ class _HomeWidgetState extends State<HomeWidget> {
         _keyAttention.currentState.refresh();
       }
     }
+    _selectedIndex = index;
   }
 
   PageController _c;

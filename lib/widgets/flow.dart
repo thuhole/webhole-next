@@ -3,6 +3,7 @@ import 'package:webhole/config.dart';
 import 'package:webhole/widgets/postWidget.dart';
 
 import '../network.dart';
+import 'editor.dart';
 
 enum FlowType { attention, posts }
 
@@ -142,7 +143,9 @@ class FlowChunkState extends State<FlowChunk> {
       floatingActionButton: _flowType == FlowType.posts
           ? FloatingActionButton(
               onPressed: () {
-                // Add your onPressed code here!
+                Navigator.push(context, MaterialPageRoute(builder: (_) {
+                  return EditorWidget(refresh);
+                }));
               },
               child: Icon(Icons.add),
               backgroundColor: secondaryColor,

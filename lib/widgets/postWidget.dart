@@ -61,13 +61,17 @@ class PostWidget extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 0.0, horizontal: 8.0),
-                            child: Text(idText +
-                                "  " +
-                                getDateDiff((new DateTime.now()
-                                            .toUtc()
-                                            .microsecondsSinceEpoch ~/
-                                        1000000) -
-                                    postInfo["timestamp"])),
+                            child: Text(
+                              idText +
+                                  "  " +
+                                  getDateDiff((new DateTime.now()
+                                              .toUtc()
+                                              .microsecondsSinceEpoch ~/
+                                          1000000) -
+                                      postInfo["timestamp"]),
+                              style: TextStyle(
+                                  color: getTextColor(postInfo["color"])),
+                            ),
                           ),
                           Spacer(),
                           postInfo["tag"] != null && postInfo["tag"] != '折叠'
@@ -86,37 +90,49 @@ class PostWidget extends StatelessWidget {
                                 )
                               : Container(),
                           postInfo["reply"] > 0
-                              ? const Icon(
+                              ? Icon(
                                   Icons.comment,
                                   size: 20,
+                                  color: getTextColor(postInfo["color"]),
                                 )
                               : Container(),
                           postInfo["reply"] > 0
                               ? Padding(
                                   padding: const EdgeInsets.only(right: 8),
-                                  child: Text(postInfo["reply"].toString()),
+                                  child: Text(
+                                    postInfo["reply"].toString(),
+                                    style: TextStyle(
+                                        color: getTextColor(postInfo["color"])),
+                                  ),
                                 )
                               : Container(),
                           postInfo["likenum"] > 0
-                              ? const Icon(
+                              ? Icon(
                                   Icons.star,
                                   size: 20,
+                                  color: getTextColor(postInfo["color"]),
                                 )
                               : Container(),
                           postInfo["likenum"] > 0
                               ? Padding(
                                   padding: const EdgeInsets.only(right: 8),
-                                  child: Text(postInfo["likenum"].toString()),
+                                  child: Text(
+                                    postInfo["likenum"].toString(),
+                                    style: TextStyle(
+                                        color: getTextColor(postInfo["color"])),
+                                  ),
                                 )
                               : Container(),
                         ],
                       ),
                     ),
-                    Divider(
-                      color: Colors.grey,
-                      thickness: 1,
-                      height: 0,
-                    ),
+                    !needFold
+                        ? Divider(
+                            color: Colors.grey,
+                            thickness: 1,
+                            height: 0,
+                          )
+                        : Container(),
                     postInfo["text"].toString().length > 0 && !needFold
                         ? Container(
                             alignment: Alignment.centerLeft,
@@ -126,6 +142,9 @@ class PostWidget extends StatelessWidget {
 //                              child: Text(postInfo["text"].toString()),
                                 child: getMarkdown(context, isDetailMode,
                                     postInfo["text"].toString())))
+                        : Container(),
+                    postInfo["rawImage"] != null
+                        ? Image.memory(postInfo["rawImage"])
                         : Container(),
                     postInfo["type"] == "image" && !needFold
                         ? Center(

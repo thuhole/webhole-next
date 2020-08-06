@@ -8,6 +8,11 @@ const PKUHOLE_API_BASE = "https://pkuhelper.pku.edu.cn/services/pkuhole";
 const PKUHOLE_IMAGE_BASE =
     "https://pkuhelper.pku.edu.cn/services/pkuhole/images/";
 
+const BASE64_RATE = 4 / 3;
+const MAX_IMG_DIAM = 8000;
+const MAX_IMG_PX = 5000000;
+//const MAX_IMG_FILESIZE = 450000 * BASE64_RATE;
+
 const FOLD_TAGS = [
   '性相关',
   '政治相关',
@@ -40,6 +45,9 @@ extension HoleTypeExtension on HoleType {
 }
 
 Color getHoleTypeColor(HoleType type) {
+//  return type == HoleType.p
+//      ? Color.fromRGBO(139, 0, 18, 1)
+//      : Color.fromRGBO(102, 8, 116, 1);
   return type == HoleType.p ? Colors.red[400] : Colors.purple[400];
 }
 
@@ -50,6 +58,8 @@ String getImageBase(HoleType type) {
 Color primaryColor = Colors.amber;
 Color secondaryColor = Colors.blueAccent;
 Color backgroundColor = Colors.grey[50];
+final Color pkuRed = Color.fromRGBO(139, 0, 18, 1);
+final Color thuPurple = Color.fromRGBO(102, 8, 116, 1);
 
 void initColor() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -38,6 +38,9 @@ dependencies:
   markdown: ^2.1.7
   url_launcher: ^5.5.0
   fluttertoast: ^7.0.2
+  image_picker: ^0.6.7
+  filesize: ^1.0.4
+  image: ^2.1.14
 
 dev_dependencies:
   flutter_test:

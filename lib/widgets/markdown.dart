@@ -6,16 +6,16 @@ import 'package:url_launcher/url_launcher.dart';
 import '../utils.dart';
 
 Widget getMarkdown(BuildContext context, bool selectable, String text) {
-  MarkdownStyleSheet defaultStyle = MarkdownStyleSheet();
+//  MarkdownStyleSheet defaultStyle = MarkdownStyleSheet();
   return MarkdownBody(
     selectable: selectable,
     data: text,
     onTapLink: _launchURL,
-    styleSheet: MarkdownStyleSheet(
-      h1: defaultStyle.h3,
-      h2: defaultStyle.h3,
-      h3: defaultStyle.h3,
-    ),
+//    styleSheet: MarkdownStyleSheet(
+//      h1: defaultStyle.h3,
+//      h2: defaultStyle.h3,
+//      h3: defaultStyle.h3,
+//    ),
     extensionSet: md.ExtensionSet(
         md.ExtensionSet.gitHubFlavored.blockSyntaxes, [
       MyLineBreakSyntax(),
