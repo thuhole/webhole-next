@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:webhole/network.dart';
 import 'package:webhole/utils.dart';
 import 'package:webhole/widgets/reply.dart';
+import 'package:http/http.dart' as http;
 
 import '../config.dart';
 import 'postWidget.dart';
@@ -31,15 +34,16 @@ class HoleDetailsState extends State<HoleDetails> {
   bool _reversed = false;
   String errorMsg;
 
+  bool _alreadyAttention = false;
+  bool _isSettingAttention = false;
+
   @override
   void dispose() {
     _disposed = true;
     super.dispose();
   }
 
-  @override
-  void initState() {
-    super.initState();
+  void _initFetcher() {
 //    _itemFetcher = CommentFetcher(this.info["holeType"], this.info["pid"]);
     if (info["text"] != null)
       _itemFetcher = TwoPageFetcher(
@@ -51,19 +55,23 @@ class HoleDetailsState extends State<HoleDetails> {
           this.info["holeType"],
           OneHoleFetcher(this.info["holeType"], this.info["pid"].toString()),
           CommentFetcher(this.info["holeType"], this.info["pid"]));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initFetcher();
     _loadMore();
   }
 
   Future<void> refresh() async {
-    _itemFetcher = TwoPageFetcher(
-        this.info["holeType"],
-        OneHoleFetcher(this.info["holeType"], this.info["pid"].toString()),
-        CommentFetcher(this.info["holeType"], this.info["pid"]));
+    _initFetcher();
     setState(() {
       _onError = false;
       _hasMore = true;
       _postsList = [];
       _isLoading = false;
+      _isSettingAttention = false;
       _loadMore();
     });
   }
@@ -77,6 +85,10 @@ class HoleDetailsState extends State<HoleDetails> {
       _itemFetcher.page = 2;
     }
     _itemFetcher.fetch().then((List<dynamic> fetchedList) {
+      if (_postsList.length == 1) {
+        _alreadyAttention =
+            (_itemFetcher.fetcher2 as CommentFetcher).getAttention();
+      }
       if (fetchedList.isEmpty) {
         setState(() {
           _isLoading = false;
@@ -125,21 +137,11 @@ class HoleDetailsState extends State<HoleDetails> {
         shape: CircleBorder(),
         children: [
           SpeedDialChild(
-              child: const Icon(Icons.report_problem),
-              backgroundColor: Colors.red,
-              label: '举报',
-//              labelStyle: TextStyle(fontSize: 18.0),
-              onTap: () => showErrorToast("Not implemented")),
-          SpeedDialChild(
-            child: const Icon(Icons.sort),
+            child: Icon(_alreadyAttention ? Icons.star : Icons.star_border),
             backgroundColor: secondaryColor,
-            label: _reversed ? '顺序' : '逆序',
+            label: _alreadyAttention ? '取消关注' : '关注',
 //            labelStyle: TextStyle(fontSize: 18.0),
-            onTap: () => {
-              setState(() {
-                _reversed = !_reversed;
-              })
-            },
+            onTap: setAttention,
           ),
           SpeedDialChild(
             child: const Icon(Icons.content_copy),
@@ -155,6 +157,23 @@ class HoleDetailsState extends State<HoleDetails> {
 //            labelStyle: TextStyle(fontSize: 18.0),
             onTap: refresh,
           ),
+          SpeedDialChild(
+            child: const Icon(Icons.sort),
+            backgroundColor: secondaryColor,
+            label: _reversed ? '顺序' : '逆序',
+//            labelStyle: TextStyle(fontSize: 18.0),
+            onTap: () => {
+              setState(() {
+                _reversed = !_reversed;
+              })
+            },
+          ),
+          SpeedDialChild(
+              child: const Icon(Icons.report_problem),
+              backgroundColor: Colors.red,
+              label: '举报',
+//              labelStyle: TextStyle(fontSize: 18.0),
+              onTap: () => showErrorToast("Not implemented")),
         ],
       ),
       body: Stack(
@@ -173,8 +192,9 @@ class HoleDetailsState extends State<HoleDetails> {
                 child: FloatingActionButton.extended(
                   key: const ValueKey('Back'),
                   onPressed: () {
-                    Navigator.of(context)
-                        .popUntil((route) => route.settings.name == '/');
+//                    Navigator.of(context)
+//                        .popUntil((route) => route.settings.name == '/');
+                    Navigator.pop(context);
                   },
                   icon: const BackButtonIcon(),
                   label: Text(
@@ -241,5 +261,42 @@ class HoleDetailsState extends State<HoleDetails> {
             }),
       ),
     );
+  }
+
+  setAttention() async {
+    if (_isSettingAttention) return;
+    setState(() {
+      _isSettingAttention = true;
+    });
+    HoleType type = info['holeType'];
+    final String token = await type.getToken();
+    Map<String, String> body = {
+      "switch": _alreadyAttention ? '0' : '1',
+      "pid": info["pid"].toString(),
+      "user_token": token
+    };
+    http
+        .post(
+            type.getApiBase() +
+                "/api.php?action=attention&PKUHelperAPI=3.0" +
+                tokenParams(token),
+//            headers: {
+//              HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded'
+//            },
+            body: body)
+        .then((resp) {
+      dynamic j = json.decode(resp.body);
+      if (j["code"] != 0) throw Exception(j["msg"]);
+      showInfoToast(_alreadyAttention ? "取消关注成功" : "关注成功");
+      setState(() {
+        _alreadyAttention = !_alreadyAttention;
+        _isSettingAttention = false;
+      });
+    }).catchError((e) {
+      showErrorToast(e.toString());
+      setState(() {
+        _isSettingAttention = false;
+      });
+    });
   }
 }

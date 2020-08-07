@@ -360,9 +360,14 @@ class MergedHoleFetcher extends HoleFetcher {
 class CommentFetcher extends OneTypeHoleFetcher {
   HoleType type;
   int page = 1;
+  bool attention;
   int pid;
 
   CommentFetcher(this.type, this.pid);
+
+  bool getAttention() {
+    return attention;
+  }
 
   Future<List<dynamic>> fetch() async {
     String token = await type.getToken();
@@ -396,6 +401,7 @@ class CommentFetcher extends OneTypeHoleFetcher {
         rtn.add(item);
       }
       rtn.sort((a, b) => a["timestamp"] - b["timestamp"]);
+      attention = j["attention"] == 1;
       page += 1;
       return rtn;
     } else {

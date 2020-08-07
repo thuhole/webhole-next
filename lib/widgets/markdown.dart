@@ -44,7 +44,7 @@ class MyLinkSyntax extends md.InlineSyntax {
   HoleType type;
 
   MyLinkSyntax(this.type)
-      : super(type == HoleType.t ? r'#\d{1,7}' : r'[2-9]\d{4,5}|1\d{4,6}');
+      : super(type == HoleType.t ? r'#\d{1,7}' : r'(?<![\d\u20e3\ufe0e\ufe0f])([2-9]\d{4,5}|1\d{4,6})(?![\d\u20e3\ufe0e\ufe0f])');
 
   @override
   bool onMatch(md.InlineParser parser, Match match) {
