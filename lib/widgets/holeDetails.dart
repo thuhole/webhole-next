@@ -41,10 +41,16 @@ class HoleDetailsState extends State<HoleDetails> {
   void initState() {
     super.initState();
 //    _itemFetcher = CommentFetcher(this.info["holeType"], this.info["pid"]);
-    _itemFetcher = TwoPageFetcher(
-        this.info["holeType"],
-        SavedHoleFetcher(this.info["holeType"], [this.info]),
-        CommentFetcher(this.info["holeType"], this.info["pid"]));
+    if (info["text"] != null)
+      _itemFetcher = TwoPageFetcher(
+          this.info["holeType"],
+          SavedHoleFetcher(this.info["holeType"], [this.info]),
+          CommentFetcher(this.info["holeType"], this.info["pid"]));
+    else
+      _itemFetcher = TwoPageFetcher(
+          this.info["holeType"],
+          OneHoleFetcher(this.info["holeType"], this.info["pid"].toString()),
+          CommentFetcher(this.info["holeType"], this.info["pid"]));
     _loadMore();
   }
 

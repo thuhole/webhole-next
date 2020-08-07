@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:webhole/widgets/hole_details.dart';
+import 'package:webhole/widgets/holeDetails.dart';
 import 'package:webhole/widgets/markdown.dart';
 
 import '../config.dart';
@@ -145,8 +145,10 @@ class PostWidget extends StatelessWidget {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12.0, vertical: 16.0),
 //                              child: Text(postInfo["text"].toString()),
-                                child: getMarkdown(context, isDetailMode,
-                                    postInfo["text"].toString())))
+                                child: getMarkdown(
+                                    context,
+                                    postInfo["text"].toString(),
+                                    postInfo["holeType"])))
                         : Container(),
                     postInfo["rawImage"] != null
                         ? Image.memory(postInfo["rawImage"])
