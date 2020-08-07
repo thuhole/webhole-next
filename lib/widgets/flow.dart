@@ -33,7 +33,6 @@ class FlowChunkState extends State<FlowChunk> {
   bool _isRefreshing = false;
   bool _hasMore = true;
   bool _onError = false;
-  bool _disposed = false;
   bool _showAppBar = true;
   String errorMsg;
 
@@ -52,7 +51,6 @@ class FlowChunkState extends State<FlowChunk> {
 
   @override
   void dispose() {
-    _disposed = true;
     super.dispose();
   }
 
@@ -90,32 +88,33 @@ class FlowChunkState extends State<FlowChunk> {
   void _loadMore() {
     if (_isLoading) return;
     _isLoading = true;
-    String oldSearchParams = _searchQueryController.text;
+//    String oldSearchParams = _searchQueryController.text;
     _itemFetcher.fetch().then((List<dynamic> fetchedList) {
-      if (oldSearchParams != _searchQueryController.text) return;
-// Do not update if the search keywords have changes.
+      _isLoading = _isRefreshing = false;
+//      if (oldSearchParams != _searchQueryController.text) return;
+// Do not update if the search keywords have chasnges.
 
       if (fetchedList.isEmpty) {
         setState(() {
           _isLoading = false;
-          _isRefreshing = false;
           _hasMore = false;
         });
       } else {
         setState(() {
           _isLoading = false;
-          _isRefreshing = false;
           _postsList.addAll(fetchedList);
         });
       }
     }).catchError((e) {
-      if (!_disposed) {
+      _isLoading = _isRefreshing = false;
+      _onError = true;
+      errorMsg = e.toString();
+      print(e);
+      if (this.mounted) {
         setState(() {
           _isLoading = false;
           _isRefreshing = false;
           _onError = true;
-          errorMsg = e.toString();
-          print(e);
         });
       }
     });

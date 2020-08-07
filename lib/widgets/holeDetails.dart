@@ -31,7 +31,6 @@ class HoleDetailsState extends State<HoleDetails> {
   bool _isRefreshing = false;
   bool _hasMore = true;
   bool _onError = false;
-  bool _disposed = false;
   bool _reversed = false;
   String errorMsg;
 
@@ -40,7 +39,6 @@ class HoleDetailsState extends State<HoleDetails> {
 
   @override
   void dispose() {
-    _disposed = true;
     super.dispose();
   }
 
@@ -88,6 +86,7 @@ class HoleDetailsState extends State<HoleDetails> {
       _itemFetcher.page = 2;
     }
     _itemFetcher.fetch().then((List<dynamic> fetchedList) {
+      _isLoading = _isRefreshing = false;
       if (_postsList.length == 1) {
         _alreadyAttention =
             (_itemFetcher.fetcher2 as CommentFetcher).getAttention();
@@ -95,24 +94,23 @@ class HoleDetailsState extends State<HoleDetails> {
       if (fetchedList.isEmpty) {
         setState(() {
           _isLoading = false;
-          _isRefreshing = false;
           _hasMore = false;
         });
       } else {
         setState(() {
           _isLoading = false;
-          _isRefreshing = false;
           _postsList.addAll(fetchedList);
         });
       }
     }).catchError((e) {
-      if (!_disposed) {
+      _isLoading = _isRefreshing = false;
+      _onError = true;
+      errorMsg = e.toString();
+      print(e);
+      if (this.mounted) {
         setState(() {
           _isLoading = false;
-          _isRefreshing = false;
           _onError = true;
-          errorMsg = e.toString();
-          print(e);
         });
       }
     });
