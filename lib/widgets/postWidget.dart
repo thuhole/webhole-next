@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:webhole/widgets/holeDetails.dart';
@@ -24,7 +26,9 @@ class PostWidget extends StatelessWidget {
 
     bool needFold = FOLD_TAGS.indexOf(postInfo["tag"]) > -1 && !isDetailMode;
     return Hero(
-      tag: HoleTypeExtension(postInfo["holeType"]).name() + type + idText,
+      tag: HoleTypeExtension(postInfo["holeType"]).name() +
+          type +
+          (idText == "#0" ? (Random().nextInt(Int32Max)).toString() : idText),
       child: Material(
         // Use material to make Hero take effect.
         color: backgroundColor,
