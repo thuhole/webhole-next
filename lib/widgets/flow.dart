@@ -30,6 +30,7 @@ class FlowChunkState extends State<FlowChunk> {
   final FlowType _flowType;
 
   bool _isLoading = false;
+  bool _isRefreshing = false;
   bool _hasMore = true;
   bool _onError = false;
   bool _disposed = false;
@@ -65,6 +66,8 @@ class FlowChunkState extends State<FlowChunk> {
   }
 
   Future<void> refresh() async {
+    if (_isRefreshing) return;
+    _isRefreshing = true;
     setState(() {
       _itemFetcher = getMergedFetcher(_flowType);
       _searchQueryController.clear();
@@ -95,11 +98,13 @@ class FlowChunkState extends State<FlowChunk> {
       if (fetchedList.isEmpty) {
         setState(() {
           _isLoading = false;
+          _isRefreshing = false;
           _hasMore = false;
         });
       } else {
         setState(() {
           _isLoading = false;
+          _isRefreshing = false;
           _postsList.addAll(fetchedList);
         });
       }
@@ -107,6 +112,7 @@ class FlowChunkState extends State<FlowChunk> {
       if (!_disposed) {
         setState(() {
           _isLoading = false;
+          _isRefreshing = false;
           _onError = true;
           errorMsg = e.toString();
           print(e);

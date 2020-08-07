@@ -28,6 +28,7 @@ class HoleDetailsState extends State<HoleDetails> {
   HoleDetailsState(this.info);
 
   bool _isLoading = false;
+  bool _isRefreshing = false;
   bool _hasMore = true;
   bool _onError = false;
   bool _disposed = false;
@@ -65,6 +66,8 @@ class HoleDetailsState extends State<HoleDetails> {
   }
 
   Future<void> refresh() async {
+    if (_isRefreshing) return;
+    _isRefreshing = true;
     _initFetcher();
     setState(() {
       _onError = false;
@@ -92,11 +95,13 @@ class HoleDetailsState extends State<HoleDetails> {
       if (fetchedList.isEmpty) {
         setState(() {
           _isLoading = false;
+          _isRefreshing = false;
           _hasMore = false;
         });
       } else {
         setState(() {
           _isLoading = false;
+          _isRefreshing = false;
           _postsList.addAll(fetchedList);
         });
       }
@@ -104,6 +109,7 @@ class HoleDetailsState extends State<HoleDetails> {
       if (!_disposed) {
         setState(() {
           _isLoading = false;
+          _isRefreshing = false;
           _onError = true;
           errorMsg = e.toString();
           print(e);
