@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:webhole/network.dart';
 import 'package:webhole/utils.dart';
+import 'package:webhole/widgets/reply.dart';
 
 import '../config.dart';
 import 'postWidget.dart';
@@ -218,6 +219,18 @@ class HoleDetailsState extends State<HoleDetails> {
               return PostWidget(
                 _postsList[_reversed ? _postsList.length - 1 - index : index],
                 isDetailMode: true,
+                replyCallback: (dynamic info) {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                            contentPadding: EdgeInsets.all(0.0),
+                            content: ReplyWidget(
+                              refresh,
+                              info,
+                            ));
+                      });
+                },
               );
             }),
       ),

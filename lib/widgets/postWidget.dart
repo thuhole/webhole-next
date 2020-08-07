@@ -8,9 +8,10 @@ import '../utils.dart';
 
 class PostWidget extends StatelessWidget {
   final dynamic postInfo;
+  final void Function(dynamic) replyCallback;
   final bool isDetailMode;
 
-  PostWidget(this.postInfo, {this.isDetailMode: false});
+  PostWidget(this.postInfo, {this.isDetailMode: false, this.replyCallback});
 
   @override
   Widget build(BuildContext context) {
@@ -41,12 +42,16 @@ class PostWidget extends StatelessWidget {
               ),
               child: InkWell(
                 splashColor: secondaryColor,
+                onDoubleTap: () {
+                  print("TODO: show copiable text");
+                },
                 onTap: () {
                   print('Card tapped.');
                   if (!this.isDetailMode)
                     Navigator.push(context, MaterialPageRoute(builder: (_) {
                       return HoleDetails(info: postInfo);
                     }));
+                  else if (replyCallback != null) replyCallback(postInfo);
                 },
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

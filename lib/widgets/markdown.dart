@@ -8,7 +8,7 @@ import '../utils.dart';
 Widget getMarkdown(BuildContext context, bool selectable, String text) {
 //  MarkdownStyleSheet defaultStyle = MarkdownStyleSheet();
   return MarkdownBody(
-    selectable: selectable,
+    selectable: false,
     data: text,
     onTapLink: _launchURL,
 //    styleSheet: MarkdownStyleSheet(
