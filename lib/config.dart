@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const Int32Max = 2147483647;
+const GitHubPage = "https://github.com/thuhole/webhole-next";
 const THUHOLE_API_BASE = "https://thuhole.com/services/thuhole";
 const THUHOLE_IMAGE_BASE = "https://thimg.yecdn.com/";
 const PKUHOLE_API_BASE = "https://pkuhelper.pku.edu.cn/services/pkuhole";

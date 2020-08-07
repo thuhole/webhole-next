@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:upgrader/upgrader.dart';
 import 'package:webhole/config.dart';
 
 import 'widgets/flow.dart';
@@ -12,6 +13,11 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final appcastURL =
+        'https://gitee.com/thuhole/app-release/raw/master/appcast.xml';
+    final cfg = AppcastConfiguration(url: appcastURL, supportedOS: ['android']);
+//    checkUpdate();
+
     return MaterialApp(
       theme: ThemeData(
 //        //main color
@@ -28,7 +34,16 @@ class MyApp extends StatelessWidget {
         //color for scrollbar
 //          highlightColor: Colors.black
       ),
-      home: HomeWidget(),
+      home: UpgradeAlert(
+        appcastConfig: cfg,
+        showIgnore: false,
+        debugLogging: true,
+//        debugAlwaysUpgrade: true,
+        daysToAlertAgain: 1,
+        canDismissDialog: true,
+        child: HomeWidget(),
+        messages: ChineseMessages(),
+      ),
     );
   }
 }
@@ -186,5 +201,31 @@ class _HomeWidgetState extends State<HomeWidget> {
         );
       },
     );
+  }
+}
+
+class ChineseMessages extends UpgraderMessages {
+  /// Override the message function to provide custom language localization.
+  @override
+  String message(UpgraderMessage messageKey) {
+//    if (languageCode == 'zh') {
+    switch (messageKey) {
+      case UpgraderMessage.body:
+        return '{{appName}}有了新版本! 新版本是{{currentAppStoreVersion}}-你当前的版本是{{currentInstalledVersion}}.';
+      case UpgraderMessage.buttonTitleIgnore:
+        return '忽略';
+      case UpgraderMessage.buttonTitleLater:
+        return '稍后更新';
+      case UpgraderMessage.buttonTitleUpdate:
+        return '立即更新';
+      case UpgraderMessage.prompt:
+        return '是否现在更新？';
+      case UpgraderMessage.title:
+        return '更新应用？';
+      default:
+        return super.message(messageKey);
+    }
+//    }
+    // Messages that are not provided above can still use the default values.
   }
 }

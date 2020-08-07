@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../config.dart';
 import '../utils.dart';
@@ -16,22 +18,30 @@ class SettingsWidget extends StatefulWidget {
 
 class _SettingsWidgetState extends State<SettingsWidget> {
   final myController = TextEditingController();
-  bool _autoUpdate = false;
+
+//  bool _autoUpdate = true;
   bool _hasThuToken = false;
   bool _hasPkuToken = false;
   Function refreshHome;
+
+  String version = "";
 
   _SettingsWidgetState(this.refreshHome);
 
   @override
   void initState() {
     super.initState();
-    updateTokenStatus().then((value) => {setState(() {})});
+    readPreferences().then((value) => {setState(() {})});
   }
 
-  Future<void> updateTokenStatus() async {
-    _hasPkuToken = isValidToken(await HoleType.p.getToken());
-    _hasThuToken = isValidToken(await HoleType.t.getToken());
+  Future<void> readPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    version = packageInfo.version;
+//    _autoUpdate = prefs.getBool("autoUpdate");
+//    if (_autoUpdate == null) _autoUpdate = true;
+    _hasPkuToken = isValidToken(prefs.getString("pkuToken"));
+    _hasThuToken = isValidToken(prefs.getString("thuToken"));
   }
 
   @override
@@ -55,7 +65,13 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               subtitle: Text(_hasThuToken ? "已登录" : "从其他设备导入登录状态"),
               trailing: Icon(Icons.chevron_right),
               onTap: () {
-                showLoginDialog(context, null, HoleType.p);
+                showLoginDialog(context, () async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  setState(() {
+                    _hasPkuToken = isValidToken(prefs.getString("thuToken"));
+                  });
+                }, HoleType.p);
               },
             ),
           ),
@@ -66,7 +82,13 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               subtitle: Text(_hasPkuToken ? "已登录" : "从其他设备导入登录状态"),
               trailing: Icon(Icons.chevron_right),
               onTap: () {
-                showLoginDialog(context, null, HoleType.p);
+                showLoginDialog(context, () async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  setState(() {
+                    _hasPkuToken = isValidToken(prefs.getString("pkuToken"));
+                  });
+                }, HoleType.p);
               },
             ),
           ),
@@ -121,20 +143,34 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               style: TextStyle(fontSize: 18.0),
             ),
           ),
+//          Card(
+//            elevation: 4,
+//            child: ListTile(
+//              title: Text("自动检查更新"),
+//              subtitle: Text("To be implemented"),
+//              trailing: Switch(
+//                value: _autoUpdate,
+//                onChanged: (bool value) async {
+//                  SharedPreferences prefs =
+//                      await SharedPreferences.getInstance();
+//                  prefs.setBool("autoUpdate", value);
+//                  setState(() {
+//                    _autoUpdate = value;
+//                    print("TODO");
+//                  });
+//                },
+//              ),
+//            ),
+//          ),
           Card(
             elevation: 4,
             child: ListTile(
-              title: Text("自动检查更新"),
-              subtitle: Text("To be implemented"),
-              trailing: Switch(
-                value: _autoUpdate,
-                onChanged: (value) {
-                  setState(() {
-                    _autoUpdate = value;
-                    print("TODO");
-                  });
-                },
-              ),
+              title: Text("GitHub主页"),
+              subtitle: Text("当前树洞版本：" + version),
+              trailing: Icon(Icons.chevron_right),
+              onTap: () async {
+                await launch(GitHubPage);
+              },
             ),
           ),
         ],
