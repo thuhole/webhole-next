@@ -65,16 +65,18 @@ class HoleDetailsState extends State<HoleDetails> {
 
   Future<void> refresh() async {
     if (_isRefreshing) return;
-    _isRefreshing = true;
-    _initFetcher();
-    setState(() {
-      _onError = false;
-      _hasMore = true;
-      _postsList = [];
-      _isLoading = false;
-      _isSettingAttention = false;
-      _loadMore();
-    });
+    if (this.mounted) {
+      _isRefreshing = true;
+      _initFetcher();
+      setState(() {
+        _onError = false;
+        _hasMore = true;
+        _postsList = [];
+        _isLoading = false;
+        _isSettingAttention = false;
+        _loadMore();
+      });
+    }
   }
 
   void _loadMore() {

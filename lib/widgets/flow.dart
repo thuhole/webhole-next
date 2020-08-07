@@ -65,18 +65,20 @@ class FlowChunkState extends State<FlowChunk> {
 
   Future<void> refresh() async {
     if (_isRefreshing) return;
-    _isRefreshing = true;
-    setState(() {
-      _itemFetcher = getMergedFetcher(_flowType);
-      _searchQueryController.clear();
-      _isSearching = false;
-      _hasMore = true;
-      _onError = false;
-      _showAppBar = true;
-      _isLoading = false;
-      _postsList = [];
-      _loadMore();
-    });
+    if(this.mounted) {
+      _isRefreshing = true;
+      setState(() {
+        _itemFetcher = getMergedFetcher(_flowType);
+        _searchQueryController.clear();
+        _isSearching = false;
+        _hasMore = true;
+        _onError = false;
+        _showAppBar = true;
+        _isLoading = false;
+        _postsList = [];
+        _loadMore();
+      });
+    }
   }
 
   Future<void> setShowAppbar(bool show) async {
