@@ -257,11 +257,12 @@ class _EditorWidgetState extends State<EditorWidget>
     setState(() {
       _isSending = true;
     });
-    HoleType type = dropdownValue == 'T大树洞' ? HoleType.t : HoleType.p;
+    HoleType type = (dropdownValue == 'T大树洞') ? HoleType.t : HoleType.p;
     final String token = await type.getToken();
     Map<String, String> body = {
       "text": _textController.text,
-      "type": _image == null ? "text" : "image"
+      "type": _image == null ? "text" : "image",
+      "user_token": token
     };
     if (_image != null) body["data"] = base64.encode(_image);
     http

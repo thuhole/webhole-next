@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:upgrader/upgrader.dart';
@@ -43,7 +44,7 @@ class MyApp extends StatelessWidget {
       home: UpgradeAlert(
         appcastConfig: cfg,
         showIgnore: false,
-        debugLogging: true,
+        debugLogging: !kReleaseMode,
 //        debugAlwaysUpgrade: true,
         daysToAlertAgain: 1,
         canDismissDialog: true,
