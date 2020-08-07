@@ -71978,13 +71978,12 @@ s.Q=this.b
 s.r=0},
 $S:0}
 F.UO.prototype={
-kR:function(a,b){switch(b){case C.qa:return"{{appName}}\u6709\u4e86\u65b0\u7248\u672c! \u65b0\u7248\u672c\u662f{{currentAppStoreVersion}}-\u4f60\u5f53\u524d\u7684\u7248\u672c\u662f{{currentInstalledVersion}}."
+kR:function(a,b){if(this.a==="zh")switch(b){case C.qa:return"{{appName}}\u6709\u4e86\u65b0\u7248\u672c! \u65b0\u7248\u672c\u662f{{currentAppStoreVersion}}\uff0c\u4f60\u5f53\u524d\u7684\u7248\u672c\u662f{{currentInstalledVersion}}\u3002"
 case C.qb:return"\u5ffd\u7565"
 case C.qc:return"\u7a0d\u540e\u66f4\u65b0"
 case C.qd:return"\u7acb\u5373\u66f4\u65b0"
 case C.qe:return"\u662f\u5426\u73b0\u5728\u66f4\u65b0\uff1f"
-case C.qf:return"\u66f4\u65b0\u5e94\u7528\uff1f"
-default:return this.Ud(0,b)}}}
+case C.qf:return"\u66f4\u65b0\u5e94\u7528\uff1f"}return this.Ud(0,b)}}
 S.Zu.prototype={}
 S.hZ.prototype={}
 S.rq.prototype={
