@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webhole/config.dart';
+import 'package:webhole/utils.dart';
 import 'package:webhole/widgets/postWidget.dart';
 
 import '../network.dart';
@@ -25,7 +26,7 @@ class FlowChunkState extends State<FlowChunk> {
 
   ScrollController _scrollBottomBarController;
 
-  MergedHoleFetcher _itemFetcher;
+  HoleFetcher _itemFetcher;
   final FlowType _flowType;
 
   bool _isLoading = false;
@@ -243,12 +244,12 @@ class FlowChunkState extends State<FlowChunk> {
             _isSearching = _searchQueryController.text.isNotEmpty;
           })
         },
-        onSubmitted: (str) {
+        onSubmitted: (str) async {
           if (str.length == 0) {
             refresh();
           } else if (str.startsWith("#")) {
             String pidString = str.substring(1);
-            _itemFetcher = _itemFetcher = MergedHoleFetcher([
+            _itemFetcher = MergedHoleFetcher([
               OneHoleFetcher(HoleType.t, pidString),
               OneHoleFetcher(HoleType.p, pidString)
             ]);
@@ -258,11 +259,15 @@ class FlowChunkState extends State<FlowChunk> {
             _postsList = [];
             _loadMore();
           } else {
+            bool isHotspot =
+                (str == '热榜' && isValidToken(await HoleType.t.getToken()));
             setState(() {
-              _itemFetcher = _itemFetcher = MergedHoleFetcher([
-                SearchPostsFetcher(HoleType.t, str),
-                SearchPostsFetcher(HoleType.p, str)
-              ]);
+              _itemFetcher = isHotspot
+                  ? SearchPostsFetcher(HoleType.t, str)
+                  : MergedHoleFetcher([
+                      SearchPostsFetcher(HoleType.t, str),
+                      SearchPostsFetcher(HoleType.p, str)
+                    ]);
               _isLoading = false;
               _hasMore = true;
               _onError = false;

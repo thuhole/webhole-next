@@ -93,6 +93,7 @@ class SearchPostsFetcher extends OneTypeHoleFetcher {
         item["likenum"] = int.parse(item["likenum"].toString());
         if (page == 1 || lastData["timestamp"] > item["timestamp"]) {
           item["holeType"] = type;
+          if (keywords == '热榜') item["color"] = primaryColor;
           rtn.add(item);
         }
       }
