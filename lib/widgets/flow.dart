@@ -4,6 +4,7 @@ import 'package:webhole/widgets/postWidget.dart';
 
 import '../network.dart';
 import 'editor.dart';
+import 'settings.dart';
 
 enum FlowType { attention, posts }
 
@@ -181,6 +182,34 @@ class FlowChunkState extends State<FlowChunk> {
             }
             if (index >= _postsList.length) {
               if (_onError) {
+                if (errorMsg == "Exception: 尚未登录") {
+                  return Center(
+                    child: Wrap(
+                      direction: Axis.horizontal,
+                      spacing: 10,
+                      children: [
+                        RaisedButton(
+                          onPressed: () {
+                            showLoginDialog(context, refresh, HoleType.t);
+                          },
+                          color: secondaryColor,
+                          child: Text('T大树洞登录',
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.white)),
+                        ),
+                        RaisedButton(
+                          onPressed: () {
+                            showLoginDialog(context, refresh, HoleType.p);
+                          },
+                          color: secondaryColor,
+                          child: Text('P大树洞登录',
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.white)),
+                        ),
+                      ],
+                    ),
+                  );
+                }
                 return Center(
                   child: Text("Error: " + errorMsg),
                 );

@@ -55,18 +55,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               subtitle: Text(_hasThuToken ? "已登录" : "从其他设备导入登录状态"),
               trailing: Icon(Icons.chevron_right),
               onTap: () {
-                showDialog(
-                    context: context,
-                    builder: (w) {
-                      return TokenForm(
-                        callback: (token) async {
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          await prefs.setString('thuToken', token);
-                          showInfoToast("已保存token:" + token);
-                        },
-                      );
-                    });
+                showLoginDialog(context, null, HoleType.p);
               },
             ),
           ),
@@ -77,18 +66,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               subtitle: Text(_hasPkuToken ? "已登录" : "从其他设备导入登录状态"),
               trailing: Icon(Icons.chevron_right),
               onTap: () {
-                showDialog(
-                    context: context,
-                    builder: (w) {
-                      return TokenForm(
-                        callback: (token) async {
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          await prefs.setString('pkuToken', token);
-                          showInfoToast("已保存token:" + token);
-                        },
-                      );
-                    });
+                showLoginDialog(context, null, HoleType.p);
               },
             ),
           ),
@@ -291,4 +269,20 @@ class _TokenFormState extends State<TokenForm> {
       ),
     );
   }
+}
+
+void showLoginDialog(BuildContext context, Function callback, HoleType type) {
+  showDialog(
+      context: context,
+      builder: (w) {
+        return TokenForm(
+          callback: (token) async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setString(
+                type == HoleType.t ? 'thuToken' : 'pkuToken', token);
+            showInfoToast("已保存token:" + token);
+            if (callback != null) callback();
+          },
+        );
+      });
 }
