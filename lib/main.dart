@@ -214,24 +214,23 @@ class ChineseMessages extends UpgraderMessages {
   /// Override the message function to provide custom language localization.
   @override
   String message(UpgraderMessage messageKey) {
-//    if (languageCode == 'zh') {
-    switch (messageKey) {
-      case UpgraderMessage.body:
-        return '{{appName}}有了新版本! 新版本是{{currentAppStoreVersion}}-你当前的版本是{{currentInstalledVersion}}.';
-      case UpgraderMessage.buttonTitleIgnore:
-        return '忽略';
-      case UpgraderMessage.buttonTitleLater:
-        return '稍后更新';
-      case UpgraderMessage.buttonTitleUpdate:
-        return '立即更新';
-      case UpgraderMessage.prompt:
-        return '是否现在更新？';
-      case UpgraderMessage.title:
-        return '更新应用？';
-      default:
-        return super.message(messageKey);
+    if (languageCode == 'zh') {
+      switch (messageKey) {
+        case UpgraderMessage.body:
+          return '{{appName}}有了新版本! 新版本是{{currentAppStoreVersion}}，你当前的版本是{{currentInstalledVersion}}。';
+        case UpgraderMessage.buttonTitleIgnore:
+          return '忽略';
+        case UpgraderMessage.buttonTitleLater:
+          return '稍后更新';
+        case UpgraderMessage.buttonTitleUpdate:
+          return '立即更新';
+        case UpgraderMessage.prompt:
+          return '是否现在更新？';
+        case UpgraderMessage.title:
+          return '更新应用？';
+      }
     }
-//    }
     // Messages that are not provided above can still use the default values.
+    return super.message(messageKey);
   }
 }
