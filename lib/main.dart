@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:upgrader/upgrader.dart';
 import 'package:webhole/config.dart';
+import 'package:umeng_analytics_plugin/umeng_analytics_plugin.dart';
 
 import 'widgets/flow.dart';
 import 'widgets/settings.dart';
@@ -13,6 +14,11 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    UmengAnalyticsPlugin.init(
+//      logEnabled: true,
+      androidKey: '5f2d2998d30932215475ff4c',
+      iosKey: '5f2d2bdbb4b08b653e923f5b',
+    );
     final appcastURL =
         'https://gitee.com/thuhole/app-release/raw/master/appcast.xml';
     final cfg = AppcastConfiguration(url: appcastURL, supportedOS: ['android']);
