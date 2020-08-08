@@ -31,7 +31,7 @@ class PostWidget extends StatelessWidget {
           (idText == "#0" ? (Random().nextInt(Int32Max)).toString() : idText),
       child: Material(
         // Use material to make Hero take effect.
-        color: backgroundColor,
+        color: holeBackgroundColor,
         child: Center(
           child: Container(
             constraints: BoxConstraints(
@@ -45,7 +45,7 @@ class PostWidget extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(15.0)),
               ),
               child: InkWell(
-                splashColor: secondaryColor,
+                splashColor: holeSecondaryColor,
                 onDoubleTap: () {
                   print("TODO: show copiable text");
                 },
@@ -91,7 +91,7 @@ class PostWidget extends StatelessWidget {
                                       elevation: 8.0,
                                       clipBehavior: Clip.antiAliasWithSaveLayer,
                                       child: Container(
-                                          color: backgroundColor,
+                                          color: holeBackgroundColor,
                                           child: Padding(
                                             padding: const EdgeInsets.all(2.0),
                                             child: Text(postInfo["tag"]),

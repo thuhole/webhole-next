@@ -134,7 +134,7 @@ class FlowChunkState extends State<FlowChunk> {
 //      ),
       appBar: _showAppBar
           ? AppBar(
-              backgroundColor: primaryColor,
+              backgroundColor: holePrimaryColor,
               title: buildSearch(),
               actions: _isSearching
                   ? [
@@ -157,7 +157,7 @@ class FlowChunkState extends State<FlowChunk> {
                 }));
               },
               child: Icon(Icons.add),
-              backgroundColor: secondaryColor,
+              backgroundColor: holeSecondaryColor,
             )
           : null,
       body: Container(
@@ -167,7 +167,7 @@ class FlowChunkState extends State<FlowChunk> {
 //              fit: BoxFit.cover,
 //            ),
 //          ),
-          decoration: new BoxDecoration(color: backgroundColor),
+          decoration: new BoxDecoration(color: holeBackgroundColor),
           child: _buildPosts()),
     );
   }
@@ -200,7 +200,7 @@ class FlowChunkState extends State<FlowChunk> {
                           onPressed: () {
                             showLoginDialog(context, refresh, HoleType.t);
                           },
-                          color: secondaryColor,
+                          color: holeSecondaryColor,
                           child: Text('T大树洞登录',
                               style:
                                   TextStyle(fontSize: 16, color: Colors.white)),
@@ -209,7 +209,7 @@ class FlowChunkState extends State<FlowChunk> {
                           onPressed: () {
                             showLoginDialog(context, refresh, HoleType.p);
                           },
-                          color: secondaryColor,
+                          color: holeSecondaryColor,
                           child: Text('P大树洞登录',
                               style:
                                   TextStyle(fontSize: 16, color: Colors.white)),

@@ -49,7 +49,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
     return Scaffold(
       appBar: AppBar(
         title: Text('设置'),
-        backgroundColor: secondaryColor,
+        backgroundColor: holeSecondaryColor,
       ),
       body: ListView(
         padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10.0),
@@ -69,9 +69,9 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                   SharedPreferences prefs =
                       await SharedPreferences.getInstance();
                   setState(() {
-                    _hasPkuToken = isValidToken(prefs.getString("thuToken"));
+                    _hasThuToken = isValidToken(prefs.getString("thuToken"));
                   });
-                }, HoleType.p);
+                }, HoleType.t);
               },
             ),
           ),
@@ -104,10 +104,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             child: ListTile(
               title: Text("主要颜色"),
               trailing: CircleAvatar(
-                backgroundColor: primaryColor,
+                backgroundColor: holePrimaryColor,
               ),
               onTap: () {
-                showColorPicker(context, primaryColor, changePrimaryColor);
+                showColorPicker(context, holePrimaryColor, changePrimaryColor);
               },
             ),
           ),
@@ -116,10 +116,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             child: ListTile(
               title: Text("次要颜色"),
               trailing: CircleAvatar(
-                backgroundColor: secondaryColor,
+                backgroundColor: holeSecondaryColor,
               ),
               onTap: () {
-                showColorPicker(context, secondaryColor, changeSecondaryColor);
+                showColorPicker(context, holeSecondaryColor, changeSecondaryColor);
               },
             ),
           ),
@@ -128,11 +128,11 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             child: ListTile(
               title: Text("背景颜色"),
               trailing: CircleAvatar(
-                backgroundColor: backgroundColor,
+                backgroundColor: holeBackgroundColor,
               ),
               onTap: () {
                 showColorPicker(
-                    context, backgroundColor, changeBackgroundColor);
+                    context, holeBackgroundColor, changeBackgroundColor);
               },
             ),
           ),
@@ -180,7 +180,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
 
   void changePrimaryColor(Color color) async {
     setState(() {
-      primaryColor = color;
+      holePrimaryColor = color;
     });
     refreshHome();
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -189,7 +189,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
 
   void changeSecondaryColor(Color color) async {
     setState(() {
-      secondaryColor = color;
+      holeSecondaryColor = color;
     });
     refreshHome();
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -198,7 +198,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
 
   void changeBackgroundColor(Color color) async {
     setState(() {
-      backgroundColor = color;
+      holeBackgroundColor = color;
     });
     refreshHome();
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -295,7 +295,7 @@ class _TokenFormState extends State<TokenForm> {
                       "Save",
                       style: TextStyle(color: Colors.white),
                     ),
-                    color: secondaryColor,
+                    color: holeSecondaryColor,
                   ),
                 ),
               )

@@ -200,7 +200,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                       ),
                     ],
                     currentIndex: _selectedIndex,
-                    selectedItemColor: primaryColor,
+                    selectedItemColor: holePrimaryColor,
                     onTap: _onItemTapped,
                   ),
                 )),

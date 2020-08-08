@@ -39,7 +39,7 @@ class _ReplyWidgetState extends State<ReplyWidget>
         (new DateTime.now().toUtc().microsecondsSinceEpoch ~/ 1000000);
     info["reply"] = 0;
     info["likenum"] = 0;
-    info["color"] = secondaryColor;
+    info["color"] = holeSecondaryColor;
     info["holeType"] = HoleType.p;
     info["text"] = "[Nickname] " + _textController.text;
   }
@@ -130,7 +130,7 @@ class _ReplyWidgetState extends State<ReplyWidget>
                     ),
                     RaisedButton(
                       onPressed: sendComment,
-                      color: secondaryColor,
+                      color: holeSecondaryColor,
                       child: Text(_isSending ? '正在发送' : '发送',
                           style: TextStyle(fontSize: 16, color: Colors.white)),
                     ),

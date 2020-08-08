@@ -93,7 +93,7 @@ class SearchPostsFetcher extends OneTypeHoleFetcher {
         item["likenum"] = int.parse(item["likenum"].toString());
         if (page == 1 || lastData["timestamp"] > item["timestamp"]) {
           item["holeType"] = type;
-          if (keywords == '热榜') item["color"] = primaryColor;
+          if (keywords == '热榜') item["color"] = holePrimaryColor;
           rtn.add(item);
         }
       }
@@ -202,7 +202,7 @@ class OneHoleFetcher extends OneTypeHoleFetcher {
       item["likenum"] = int.parse(item["likenum"].toString());
       item["holeType"] = type;
       item["color"] = await validTokenCount() == 1
-          ? primaryColor
+          ? holePrimaryColor
           : getHoleTypeColor(item["holeType"]);
       page += 1;
       return [item];
@@ -310,7 +310,7 @@ class MergedHoleFetcher extends HoleFetcher {
       for (dynamic item in fetchersResults[i]) {
         if (item["timestamp"] >= currentTimestamp) {
           item["color"] = await this.enabledCount() == 1
-              ? primaryColor
+              ? holePrimaryColor
               : getHoleTypeColor(item["holeType"]);
           rtn.add(item);
         }
@@ -395,7 +395,7 @@ class CommentFetcher extends OneTypeHoleFetcher {
         item["timestamp"] = int.parse(item["timestamp"].toString());
         item["pid"] = int.parse(item["pid"].toString());
         item["cid"] = int.parse(item["cid"].toString());
-        item["color"] = secondaryColor;
+        item["color"] = holeSecondaryColor;
         item["reply"] = 0;
         item["likenum"] = 0;
         item["holeType"] = type;

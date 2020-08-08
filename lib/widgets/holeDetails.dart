@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:webhole/network.dart';
@@ -137,35 +138,35 @@ class HoleDetailsState extends State<HoleDetails> {
 //        curve: Curves.bounceIn,
 //        overlayColor: Colors.white,
 //        overlayOpacity: 0.5,
-        backgroundColor: secondaryColor,
+        backgroundColor: holeSecondaryColor,
 //        foregroundColor: Colors.white,
         elevation: 4.0,
         shape: CircleBorder(),
         children: [
           SpeedDialChild(
             child: Icon(_alreadyAttention ? Icons.star : Icons.star_border),
-            backgroundColor: secondaryColor,
+            backgroundColor: holeSecondaryColor,
             label: _alreadyAttention ? '取消关注' : '关注',
 //            labelStyle: TextStyle(fontSize: 18.0),
             onTap: setAttention,
           ),
           SpeedDialChild(
             child: const Icon(Icons.content_copy),
-            backgroundColor: secondaryColor,
+            backgroundColor: holeSecondaryColor,
             label: '复制全文',
 //            labelStyle: TextStyle(fontSize: 18.0),
             onTap: () => showErrorToast("Not implemented"),
           ),
           SpeedDialChild(
             child: const Icon(Icons.refresh),
-            backgroundColor: secondaryColor,
+            backgroundColor: holeSecondaryColor,
             label: '刷新',
 //            labelStyle: TextStyle(fontSize: 18.0),
             onTap: refresh,
           ),
           SpeedDialChild(
             child: const Icon(Icons.sort),
-            backgroundColor: secondaryColor,
+            backgroundColor: holeSecondaryColor,
             label: _reversed ? '顺序' : '逆序',
 //            labelStyle: TextStyle(fontSize: 18.0),
             onTap: () => {
@@ -185,7 +186,7 @@ class HoleDetailsState extends State<HoleDetails> {
       body: Stack(
         children: [
           Container(
-              decoration: BoxDecoration(color: backgroundColor),
+              decoration: BoxDecoration(color: holeBackgroundColor),
               child: _buildPosts()),
           Align(
             alignment: AlignmentDirectional.bottomStart,
@@ -206,7 +207,7 @@ class HoleDetailsState extends State<HoleDetails> {
                   label: Text(
                     MaterialLocalizations.of(context).backButtonTooltip,
                   ),
-                  backgroundColor: secondaryColor,
+                  backgroundColor: holeSecondaryColor,
                 ),
               ),
             ),
@@ -220,9 +221,11 @@ class HoleDetailsState extends State<HoleDetails> {
     ScrollController _rrectController = ScrollController();
     return RefreshIndicator(
       onRefresh: refresh,
-      child: DraggableScrollbar.rrect(
+      child: DraggableScrollbar(
         controller: _rrectController,
-        backgroundColor: Colors.black,
+        heightScrollThumb: 48.0,
+        backgroundColor: holeSecondaryColor,
+        scrollThumbBuilder: buildScrollBar,
         child: ListView.builder(
             controller: _rrectController,
             physics: ClampingScrollPhysics(),
@@ -248,8 +251,13 @@ class HoleDetailsState extends State<HoleDetails> {
                   ),
                 );
               }
+
+              Map<String, dynamic> tmp =
+                  _postsList[_reversed ? _postsList.length - 1 - index : index];
+              if ((tmp["text"] as String).startsWith("[洞主]"))
+                tmp["color"] = _postsList[0]["color"];
               return PostWidget(
-                _postsList[_reversed ? _postsList.length - 1 - index : index],
+                tmp,
                 isDetailMode: true,
                 replyCallback: (dynamic info) {
                   showDialog(
@@ -305,4 +313,43 @@ class HoleDetailsState extends State<HoleDetails> {
       });
     });
   }
+}
+
+Widget buildScrollBar(
+  Color backgroundColor2,
+  Animation<double> thumbAnimation,
+  Animation<double> labelAnimation,
+  double height, {
+  Text labelText,
+  BoxConstraints labelConstraints,
+}) {
+  final scrollThumb = CustomPaint(
+//    key: scrollThumbKey,
+//    foregroundPainter: ArrowCustomPainter(Colors.white),
+    foregroundPainter: ArrowCustomPainter(brighten(holeSecondaryColor, 20)),
+    child: Material(
+      elevation: 4.0,
+      child: Container(
+        constraints: BoxConstraints.tight(Size(height * 0.6, height)),
+      ),
+//      color: darken(secondaryColor, 20),
+      color: holeBackgroundColor,
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(height),
+        bottomLeft: Radius.circular(height),
+        topRight: Radius.circular(4.0),
+        bottomRight: Radius.circular(4.0),
+      ),
+    ),
+  );
+
+  return DraggableScrollbar.buildScrollThumbAndLabel(
+    scrollThumb: scrollThumb,
+    backgroundColor: holeBackgroundColor,
+    thumbAnimation: thumbAnimation,
+    labelAnimation: labelAnimation,
+    labelText: labelText,
+    labelConstraints: labelConstraints,
+    alwaysVisibleScrollThumb: false,
+  );
 }

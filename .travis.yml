@@ -12,7 +12,7 @@ before_script:
   - flutter config --enable-web
 
 script:
-  - flutter build web --release
+  - flutter build web --release --build-number $TRAVIS_BUILD_NUMBER
 
 deploy:
   provider: pages

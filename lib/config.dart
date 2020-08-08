@@ -56,9 +56,9 @@ String getImageBase(HoleType type) {
   return type == HoleType.p ? PKUHOLE_IMAGE_BASE : THUHOLE_IMAGE_BASE;
 }
 
-Color primaryColor = Colors.amber;
-Color secondaryColor = Colors.blueAccent;
-Color backgroundColor = Colors.grey[50];
+Color holePrimaryColor = Colors.amber;
+Color holeSecondaryColor = Colors.blueAccent;
+Color holeBackgroundColor = Colors.grey[50];
 final Color pkuRed = Color.fromRGBO(139, 0, 18, 1);
 final Color thuPurple = Color.fromRGBO(102, 8, 116, 1);
 
@@ -67,7 +67,7 @@ void initColor() async {
   int pColorInt = prefs.getInt("primaryColor");
   int sColorInt = prefs.getInt("secondaryColor");
   int bColorInt = prefs.getInt("backgroundColor");
-  if (pColorInt != null) primaryColor = Color(pColorInt);
-  if (sColorInt != null) secondaryColor = Color(sColorInt);
-  if (bColorInt != null) backgroundColor = Color(bColorInt);
+  if (pColorInt != null) holePrimaryColor = Color(pColorInt);
+  if (sColorInt != null) holeSecondaryColor = Color(sColorInt);
+  if (bColorInt != null) holeBackgroundColor = Color(bColorInt);
 }

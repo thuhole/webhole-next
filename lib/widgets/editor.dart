@@ -88,7 +88,7 @@ class _EditorWidgetState extends State<EditorWidget>
         (new DateTime.now().toUtc().microsecondsSinceEpoch ~/ 1000000);
     info["reply"] = 0;
     info["likenum"] = 0;
-    info["color"] = primaryColor;
+    info["color"] = holePrimaryColor;
     info["holeType"] = HoleType.p;
     info["text"] = _textController.text;
     info["rawImage"] = _image;
@@ -121,11 +121,11 @@ class _EditorWidgetState extends State<EditorWidget>
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: primaryColor,
+          backgroundColor: holePrimaryColor,
           title: Text("发表树洞"),
           bottom: TabBar(
             controller: _tabController,
-            indicatorColor: primaryColor,
+            indicatorColor: holePrimaryColor,
             tabs: <Widget>[
               Tab(
                 child: Text(
@@ -173,7 +173,7 @@ class _EditorWidgetState extends State<EditorWidget>
                                 compressImage(await pickedFile.readAsBytes());
                             setState(() {});
                           },
-                          color: secondaryColor,
+                          color: holeSecondaryColor,
                           child: Text(
                               _image == null
                                   ? '上传图片'
@@ -194,7 +194,7 @@ class _EditorWidgetState extends State<EditorWidget>
                             : Container(),
                         RaisedButton(
                           onPressed: send,
-                          color: secondaryColor,
+                          color: holeSecondaryColor,
                           child: Text(_isSending ? '正在发送' : '发送',
                               style:
                                   TextStyle(fontSize: 16, color: Colors.white)),
