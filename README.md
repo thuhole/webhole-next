@@ -1,7 +1,7 @@
 # webhole-next
 基于[Flutter](https://flutter.dev)的新树洞。
 
-## This project is still in alpha and under active development.
+# This project is deprecated.
 
 ### Android版：[下载](https://download.fastgit.org/thuhole/webhole-next/releases/download/v0.0.7/v0.0.7.apk)
 ### Web版：[https://nightly.thuhole.com](https://nightly.thuhole.com)，可能卡顿和不稳定。
